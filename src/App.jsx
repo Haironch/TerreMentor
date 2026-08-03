@@ -3,6 +3,7 @@ import { useSismos } from "./hooks/useSismos";
 import { useQuakeAlerts } from "./hooks/useQuakeAlerts";
 import { SismoMap } from "./components/SismoMap";
 import { LatestQuakeCard } from "./components/LatestQuakeCard";
+import { SafetyTipCard } from "./components/SafetyTipCard";
 import { DailyCountChart } from "./components/DailyCountChart";
 import { MagnitudeChart } from "./components/MagnitudeChart";
 import { RefreshButton } from "./components/RefreshButton";
@@ -65,6 +66,7 @@ function App() {
 
           <aside className="app-sidebar">
             <LatestQuakeCard quake={data.latest} stats={data.stats} />
+            <SafetyTipCard quake={data.latest} />
             <ZoneRanking quakes={selectedQuakes} />
             <DailyCountChart quakes={selectedQuakes} />
             <MagnitudeChart quakes={selectedQuakes} />

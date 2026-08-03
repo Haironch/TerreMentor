@@ -652,6 +652,53 @@ body {
   font-size: 14px;
 }
 
+/* ---------- Safety tip ---------- */
+
+.tip-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--band-color, var(--accent));
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.tip-card-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.tip-card-emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.tip-card-title {
+  margin: 0 0 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.tip-card-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.tip-card-note {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.tip-card-note a {
+  color: var(--text-secondary);
+}
+
 /* ---------- Charts ---------- */
 
 .chart-card {
