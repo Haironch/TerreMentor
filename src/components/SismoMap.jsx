@@ -1,8 +1,10 @@
+import { useMemo, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 import "leaflet/dist/leaflet.css";
 import { severityFor, SEVERITY_BANDS } from "../lib/severity";
+import { HeatmapLayer } from "./HeatmapLayer";
 
 const GUATEMALA_CENTER = [14.6, -90.6];
 
@@ -12,6 +14,11 @@ const LAYER_OPTIONS = [
   { key: "SISMOS 1 semana SENSIBLES", label: "Última semana · sensibles" },
   { key: "SISMOS 1 mes", label: "Último mes" },
   { key: "SISMOS 1 mes SENSIBLES", label: "Último mes · sensibles" },
+];
+
+const VIEW_MODES = [
+  { key: "points", label: "Puntos" },
+  { key: "heat", label: "Calor" },
 ];
 
 function radiusFor(magnitude) {
@@ -47,7 +54,9 @@ function QuakePopup({ q, band }) {
 }
 
 export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
-  const quakes = groups?.[selectedLayer]?.quakes ?? [];
+  const [viewMode, setViewMode] = useState("points");
+  const quakes = useMemo(() => groups?.[selectedLayer]?.quakes ?? [], [groups, selectedLayer]);
+  const heatPoints = useMemo(() => quakes.map((q) => [q.lat, q.lon, q.magnitude]), [quakes]);
 
   return (
     <div className="sismo-map">
@@ -60,14 +69,36 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
             </option>
           ))}
         </select>
-        <div className="sismo-legend">
-          {SEVERITY_BANDS.map((band) => (
-            <span key={band.key} className="sismo-legend-item">
-              <i style={{ background: band.color }} />
-              {band.label}
-            </span>
+
+        <div className="view-mode-toggle">
+          {VIEW_MODES.map((mode) => (
+            <button
+              key={mode.key}
+              type="button"
+              className={mode.key === viewMode ? "active" : ""}
+              onClick={() => setViewMode(mode.key)}
+            >
+              {mode.label}
+            </button>
           ))}
         </div>
+
+        {viewMode === "points" ? (
+          <div className="sismo-legend">
+            {SEVERITY_BANDS.map((band) => (
+              <span key={band.key} className="sismo-legend-item">
+                <i style={{ background: band.color }} />
+                {band.label}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <div className="sismo-legend">
+            <span className="heat-legend-gradient" />
+            <span className="heat-legend-label">Baja</span>
+            <span className="heat-legend-label">Alta densidad</span>
+          </div>
+        )}
       </div>
 
       <MapContainer center={GUATEMALA_CENTER} zoom={7} scrollWheelZoom={false} className="sismo-map-canvas">
@@ -75,19 +106,23 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
-        {quakes.map((q) => {
-          const band = severityFor(q.magnitude);
-          return (
-            <CircleMarker
-              key={q.id}
-              center={[q.lat, q.lon]}
-              radius={radiusFor(q.magnitude)}
-              pathOptions={{ color: band.color, fillColor: band.color, fillOpacity: 0.75, weight: 1 }}
-            >
-              <QuakePopup q={q} band={band} />
-            </CircleMarker>
-          );
-        })}
+
+        {viewMode === "points" &&
+          quakes.map((q) => {
+            const band = severityFor(q.magnitude);
+            return (
+              <CircleMarker
+                key={q.id}
+                center={[q.lat, q.lon]}
+                radius={radiusFor(q.magnitude)}
+                pathOptions={{ color: band.color, fillColor: band.color, fillOpacity: 0.75, weight: 1 }}
+              >
+                <QuakePopup q={q} band={band} />
+              </CircleMarker>
+            );
+          })}
+
+        {viewMode === "heat" && <HeatmapLayer points={heatPoints} />}
 
         {latest && (
           <Marker position={[latest.lat, latest.lon]} icon={pulseIcon}>

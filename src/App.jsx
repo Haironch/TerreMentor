@@ -8,6 +8,7 @@ import { RefreshButton } from "./components/RefreshButton";
 import { Logo } from "./components/Logo";
 import { LiveIndicator } from "./components/LiveIndicator";
 import { StatTile } from "./components/StatTile";
+import { ZoneRanking } from "./components/ZoneRanking";
 import { AppSkeleton } from "./components/Skeleton";
 import "./App.css";
 
@@ -30,9 +31,7 @@ function App() {
             <RefreshButton refreshing={refreshing} onRefresh={refetch} />
           </div>
         </div>
-        <p className="app-subtitle">
-          Monitoreo comunitario de sismos en Guatemala y Centroamérica, con datos públicos de INSIVUMEH.
-        </p>
+        <p className="app-subtitle">Proyecto desarrollado por hairch.dev</p>
 
         {data?.stats && (
           <div className="stat-tiles">
@@ -61,6 +60,7 @@ function App() {
 
           <aside className="app-sidebar">
             <LatestQuakeCard quake={data.latest} stats={data.stats} />
+            <ZoneRanking quakes={selectedQuakes} />
             <DailyCountChart quakes={selectedQuakes} />
             <MagnitudeChart quakes={selectedQuakes} />
           </aside>
@@ -68,8 +68,11 @@ function App() {
       )}
 
       <footer className="app-footer">
-        Datos: <a href="https://geo.insivumeh.gob.gt/sismo" target="_blank" rel="noreferrer">INSIVUMEH</a> · Proyecto
-        comunitario sin fines de lucro.
+        Monitoreo comunitario de sismos en Guatemala y Centroamérica, con datos públicos de{" "}
+        <a href="https://geo.insivumeh.gob.gt/sismo" target="_blank" rel="noreferrer">
+          INSIVUMEH
+        </a>{" "}
+        · Proyecto comunitario sin fines de lucro.
       </footer>
     </div>
   );
