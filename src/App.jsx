@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSismos } from "./hooks/useSismos";
+import { useQuakeAlerts } from "./hooks/useQuakeAlerts";
 import { SismoMap } from "./components/SismoMap";
 import { LatestQuakeCard } from "./components/LatestQuakeCard";
 import { DailyCountChart } from "./components/DailyCountChart";
@@ -9,6 +10,7 @@ import { Logo } from "./components/Logo";
 import { LiveIndicator } from "./components/LiveIndicator";
 import { StatTile } from "./components/StatTile";
 import { ZoneRanking } from "./components/ZoneRanking";
+import { AlertSettings } from "./components/AlertSettings";
 import { AppSkeleton } from "./components/Skeleton";
 import "./App.css";
 
@@ -17,6 +19,8 @@ function App() {
   const [selectedLayer, setSelectedLayer] = useState("SISMOS 1 semana");
 
   const selectedQuakes = data?.groups?.[selectedLayer]?.quakes ?? [];
+  const sensibleQuakes = data?.groups?.["SISMOS 1 semana SENSIBLES"]?.quakes ?? [];
+  const alerts = useQuakeAlerts(sensibleQuakes);
   const liveStatus = error ? "offline" : loading ? "loading" : "live";
 
   return (
@@ -28,6 +32,7 @@ function App() {
           <Logo />
           <div className="header-actions">
             <LiveIndicator status={liveStatus} />
+            <AlertSettings alerts={alerts} />
             <RefreshButton refreshing={refreshing} onRefresh={refetch} />
           </div>
         </div>

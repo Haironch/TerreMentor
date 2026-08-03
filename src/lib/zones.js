@@ -1,3 +1,5 @@
+import { haversineKm } from "./geo";
+
 // Cabeceras departamentales de Guatemala (coordenadas aproximadas). Se usan
 // solo como referencia para agrupar sismos por cercanía, no como límites
 // administrativos reales — muchos sismos caen en el mar o fuera del país, y
@@ -26,16 +28,6 @@ export const REFERENCE_ZONES = [
   { name: "Jalapa", lat: 14.6333, lon: -89.9889 },
   { name: "Jutiapa", lat: 14.2911, lon: -89.8956 },
 ];
-
-function haversineKm(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(a));
-}
 
 export function nearestZone(lat, lon) {
   let best = REFERENCE_ZONES[0];

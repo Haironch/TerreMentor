@@ -82,6 +82,83 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
+  flex-wrap: wrap;
+}
+
+.alert-settings {
+  position: relative;
+}
+
+.alert-toggle {
+  padding: 7px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.alert-toggle:hover {
+  background: var(--surface-3);
+  border-color: var(--accent);
+}
+
+.alert-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alert-panel-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.alert-panel label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.alert-panel select {
+  width: 100%;
+  font: inherit;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.alert-panel button {
+  font: inherit;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--border-strong);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.alert-panel-error {
+  margin: 0;
+  font-size: 12px;
+  color: var(--critical);
 }
 
 .app-subtitle {
