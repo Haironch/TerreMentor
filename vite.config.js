@@ -1,0 +1,78 @@
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
+import { getSismos } from './api/_lib/fetchSismos.js'
+
+// Simula en desarrollo la función serverless de api/sismos.js (que en
+// producción correría en Vercel/Cloudflare). Así `npm run dev` sirve datos
+// reales sin necesitar `vercel dev`.
+function sismosApiDevMiddleware() {
+  return {
+    name: 'sismos-api-dev-middleware',
+    configureServer(server) {
+      server.middlewares.use('/api/sismos', async (req, res) => {
+        try {
+          const force = new URL(req.url, 'http://localhost').searchParams.get('force') === '1'
+          const data = await getSismos({ force })
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify(data))
+        } catch (err) {
+          res.statusCode = 502
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: 'No se pudo obtener datos de INSIVUMEH', detail: err.message }))
+        }
+      })
+    },
+  }
+}
+
+const pwaPlugin = VitePWA({
+  registerType: 'autoUpdate',
+  devOptions: { enabled: true, type: 'module' },
+  includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+  manifest: {
+    name: 'TerreMentor · Monitoreo sísmico comunitario',
+    short_name: 'TerreMentor',
+    description: 'Monitoreo comunitario de sismos en Guatemala y Centroamérica, con datos públicos de INSIVUMEH.',
+    lang: 'es-GT',
+    start_url: '/',
+    scope: '/',
+    display: 'standalone',
+    theme_color: '#0a0d12',
+    background_color: '#0a0d12',
+    icons: [
+      { src: '/pwa-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/pwa-maskable-192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+      { src: '/pwa-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    ],
+  },
+  workbox: {
+    runtimeCaching: [
+      {
+        urlPattern: /\/api\/sismos(\?.*)?$/,
+        handler: 'NetworkFirst',
+        options: {
+          cacheName: 'sismos-api',
+          networkTimeoutSeconds: 8,
+          expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 },
+          cacheableResponse: { statuses: [0, 200] },
+        },
+      },
+      {
+        urlPattern: /^https:\/\/[a-z]\.basemaps\.cartocdn\.com\/.*/,
+        handler: 'CacheFirst',
+        options: {
+          cacheName: 'map-tiles',
+          expiration: { maxEntries: 400, maxAgeSeconds: 30 * 24 * 60 * 60 },
+          cacheableResponse: { statuses: [0, 200] },
+        },
+      },
+    ],
+  },
+})
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), sismosApiDevMiddleware(), pwaPlugin],
+})
