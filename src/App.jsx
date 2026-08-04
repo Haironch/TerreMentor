@@ -43,7 +43,7 @@ function App() {
 
         {data?.stats && (
           <div className="stat-tiles">
-            <StatTile label="Última actualización" value={data.stats.updatedAt} />
+            <StatTile label="Última actualización" value={data.stats.updatedAt} wide />
             <StatTile label="Registrados (semana)" value={data.stats.registrados} />
             <StatTile label="Sensibles (semana)" value={data.stats.sensibles} accent />
             <StatTile label="Total (semana)" value={data.stats.total} />

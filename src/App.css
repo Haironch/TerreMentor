@@ -41,6 +41,7 @@ body {
   background: var(--page);
   color: var(--text-primary);
   font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
 #root {
@@ -53,6 +54,7 @@ body {
   margin: 0 auto;
   padding: 20px 20px 32px;
   isolation: isolate;
+  overflow-x: hidden;
 }
 
 .app-glow {
@@ -60,7 +62,7 @@ body {
   top: -220px;
   left: 50%;
   transform: translateX(-50%);
-  width: 900px;
+  width: min(900px, 100vw);
   height: 420px;
   background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%);
   opacity: 0.35;
@@ -278,6 +280,10 @@ body {
   .stat-tiles {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .stat-tile-wide {
+    grid-column: span 2;
+  }
 }
 
 .stat-tile {
@@ -322,7 +328,7 @@ body {
 
 .app-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: 16px;
   align-items: start;
   margin-top: 18px;
@@ -330,7 +336,7 @@ body {
 
 @media (max-width: 860px) {
   .app-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
