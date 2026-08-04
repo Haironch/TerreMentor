@@ -13,6 +13,7 @@ import { StatTile } from "./components/StatTile";
 import { ZoneRanking } from "./components/ZoneRanking";
 import { AlertSettings } from "./components/AlertSettings";
 import { WeatherDashboard } from "./components/WeatherDashboard";
+import { VolcanoDashboard } from "./components/VolcanoDashboard";
 import { AppSkeleton } from "./components/Skeleton";
 import "./App.css";
 
@@ -75,6 +76,7 @@ function App() {
         </main>
       )}
 
+      <VolcanoDashboard />
       <WeatherDashboard />
 
       <footer className="app-footer">

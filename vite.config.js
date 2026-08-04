@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { getSismos } from './api/_lib/fetchSismos.js'
 import { getClima } from './api/_lib/fetchClima.js'
+import { getVolcanes } from './api/_lib/fetchVolcanes.js'
 
 // Simula en desarrollo la función serverless de api/sismos.js (que en
 // producción correría en Vercel/Cloudflare). Así `npm run dev` sirve datos
@@ -47,6 +48,25 @@ function climaApiDevMiddleware() {
           res.statusCode = 502
           res.setHeader('Content-Type', 'application/json')
           res.end(JSON.stringify({ error: 'No se pudo obtener el clima', detail: err.message }))
+        }
+      })
+    },
+  }
+}
+
+function volcanesApiDevMiddleware() {
+  return {
+    name: 'volcanes-api-dev-middleware',
+    configureServer(server) {
+      server.middlewares.use('/api/volcanes', async (req, res) => {
+        try {
+          const data = await getVolcanes()
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify(data))
+        } catch (err) {
+          res.statusCode = 502
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: 'No se pudo obtener el estado volcánico', detail: err.message }))
         }
       })
     },
@@ -111,5 +131,5 @@ const pwaPlugin = VitePWA({
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), sismosApiDevMiddleware(), climaApiDevMiddleware(), pwaPlugin],
+  plugins: [react(), sismosApiDevMiddleware(), climaApiDevMiddleware(), volcanesApiDevMiddleware(), pwaPlugin],
 })

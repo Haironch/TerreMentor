@@ -962,6 +962,163 @@ body {
   color: var(--text-muted);
 }
 
+/* ---------- Volcano dashboard ---------- */
+
+.volcano-section {
+  margin-top: 20px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.volcano-header {
+  margin-bottom: 14px;
+}
+
+.volcano-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.volcano-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.volcano-cams {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.volcano-cam-card {
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.volcano-cam-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--surface-2);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.volcano-cam-live {
+  color: var(--critical);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.volcano-cam-media {
+  position: relative;
+}
+
+.volcano-cam-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+.volcano-cam-offline {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.volcano-status-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.volcano-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.volcano-status-badge.is-active {
+  border-color: rgba(208, 59, 59, 0.4);
+  background: linear-gradient(180deg, rgba(208, 59, 59, 0.1), var(--surface-2) 70%);
+}
+
+.volcano-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--good);
+  flex-shrink: 0;
+}
+
+.volcano-status-badge.is-active .volcano-status-dot {
+  background: var(--critical);
+  box-shadow: 0 0 0 0 rgba(208, 59, 59, 0.5);
+  animation: live-pulse 2s infinite;
+}
+
+.volcano-status-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.volcano-status-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.volcano-status-link {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.volcano-daily-link {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.volcano-daily-link:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.volcano-source {
+  margin: 14px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
 /* ---------- Footer ---------- */
 
 .app-footer {
