@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { getSismos } from './api/_lib/fetchSismos.js'
+import { getClima } from './api/_lib/fetchClima.js'
 
 // Simula en desarrollo la función serverless de api/sismos.js (que en
 // producción correría en Vercel/Cloudflare). Así `npm run dev` sirve datos
@@ -20,6 +21,32 @@ function sismosApiDevMiddleware() {
           res.statusCode = 502
           res.setHeader('Content-Type', 'application/json')
           res.end(JSON.stringify({ error: 'No se pudo obtener datos de INSIVUMEH', detail: err.message }))
+        }
+      })
+    },
+  }
+}
+
+function climaApiDevMiddleware() {
+  return {
+    name: 'clima-api-dev-middleware',
+    configureServer(server) {
+      server.middlewares.use('/api/clima', async (req, res) => {
+        try {
+          const departamento = new URL(req.url, 'http://localhost').searchParams.get('departamento')
+          if (!departamento) {
+            res.statusCode = 400
+            res.setHeader('Content-Type', 'application/json')
+            res.end(JSON.stringify({ error: 'Falta el parámetro departamento' }))
+            return
+          }
+          const data = await getClima(departamento)
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify(data))
+        } catch (err) {
+          res.statusCode = 502
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: 'No se pudo obtener el clima', detail: err.message }))
         }
       })
     },
@@ -68,11 +95,21 @@ const pwaPlugin = VitePWA({
           cacheableResponse: { statuses: [0, 200] },
         },
       },
+      {
+        urlPattern: /\/api\/clima(\?.*)?$/,
+        handler: 'NetworkFirst',
+        options: {
+          cacheName: 'clima-api',
+          networkTimeoutSeconds: 8,
+          expiration: { maxEntries: 22, maxAgeSeconds: 60 * 60 },
+          cacheableResponse: { statuses: [0, 200] },
+        },
+      },
     ],
   },
 })
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), sismosApiDevMiddleware(), pwaPlugin],
+  plugins: [react(), sismosApiDevMiddleware(), climaApiDevMiddleware(), pwaPlugin],
 })

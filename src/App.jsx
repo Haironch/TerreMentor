@@ -12,6 +12,7 @@ import { LiveIndicator } from "./components/LiveIndicator";
 import { StatTile } from "./components/StatTile";
 import { ZoneRanking } from "./components/ZoneRanking";
 import { AlertSettings } from "./components/AlertSettings";
+import { WeatherDashboard } from "./components/WeatherDashboard";
 import { AppSkeleton } from "./components/Skeleton";
 import "./App.css";
 
@@ -73,6 +74,8 @@ function App() {
           </aside>
         </main>
       )}
+
+      <WeatherDashboard />
 
       <footer className="app-footer">
         Monitoreo comunitario de sismos en Guatemala y Centroamérica, con datos públicos de{" "}
