@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { severityFor } from "../lib/severity";
+import { ShareImageButton } from "./ShareImageButton";
 
 function formatSummary(quake, stats) {
   return [
@@ -82,6 +83,7 @@ export function LatestQuakeCard({ quake, stats }) {
       <div className="latest-card-actions">
         <button onClick={handleCopy}>{copied ? "Copiado ✓" : "Copiar datos"}</button>
         <button onClick={handleShare}>Compartir</button>
+        <ShareImageButton quake={quake} />
       </div>
     </div>
   );

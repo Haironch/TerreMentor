@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import "leaflet/dist/leaflet.css";
 import { severityFor, SEVERITY_BANDS } from "../lib/severity";
 import { HeatmapLayer } from "./HeatmapLayer";
+import { MapAutoResize } from "./MapAutoResize";
 
 const GUATEMALA_CENTER = [14.6, -90.6];
 
@@ -102,6 +103,7 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
       </div>
 
       <MapContainer center={GUATEMALA_CENTER} zoom={7} scrollWheelZoom={false} className="sismo-map-canvas">
+        <MapAutoResize />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
