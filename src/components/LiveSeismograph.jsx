@@ -1,12 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { severityFor, SEVERITY_BANDS } from "../lib/severity";
+import { parseGtDatetime } from "../lib/time";
 
 const WINDOW_MS = 3 * 60 * 60 * 1000; // ventana visible: últimas 3 horas
-const GT_OFFSET = "-06:00"; // Guatemala no usa horario de verano
-
-function parseGtDate(datetime) {
-  return new Date(`${datetime.replace(" ", "T")}${GT_OFFSET}`).getTime();
-}
 
 export function LiveSeismograph({ quakes }) {
   const containerRef = useRef(null);
@@ -16,7 +12,7 @@ export function LiveSeismograph({ quakes }) {
   const events = useMemo(
     () =>
       (quakes ?? [])
-        .map((q) => ({ ...q, ts: parseGtDate(q.datetime) }))
+        .map((q) => ({ ...q, ts: parseGtDatetime(q.datetime) }))
         .filter((q) => !Number.isNaN(q.ts)),
     [quakes]
   );

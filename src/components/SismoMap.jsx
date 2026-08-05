@@ -6,6 +6,8 @@ import "leaflet/dist/leaflet.css";
 import { severityFor, SEVERITY_BANDS } from "../lib/severity";
 import { HeatmapLayer } from "./HeatmapLayer";
 import { MapAutoResize } from "./MapAutoResize";
+import { TimelapseControls } from "./TimelapseControls";
+import { useTimelapse } from "../hooks/useTimelapse";
 
 const GUATEMALA_CENTER = [14.6, -90.6];
 
@@ -57,7 +59,11 @@ function QuakePopup({ q, band }) {
 export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
   const [viewMode, setViewMode] = useState("points");
   const quakes = useMemo(() => groups?.[selectedLayer]?.quakes ?? [], [groups, selectedLayer]);
-  const heatPoints = useMemo(() => quakes.map((q) => [q.lat, q.lon, q.magnitude]), [quakes]);
+  const timelapse = useTimelapse(quakes);
+  const heatPoints = useMemo(
+    () => timelapse.displayQuakes.map((q) => [q.lat, q.lon, q.magnitude]),
+    [timelapse.displayQuakes]
+  );
 
   return (
     <div className="sismo-map">
@@ -102,6 +108,15 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
         )}
       </div>
 
+      <TimelapseControls
+        disabled={!timelapse.canPlay}
+        isPlaying={timelapse.isPlaying}
+        progress={timelapse.progress}
+        label={timelapse.label}
+        onTogglePlay={timelapse.togglePlay}
+        onScrub={timelapse.scrub}
+      />
+
       <MapContainer center={GUATEMALA_CENTER} zoom={7} scrollWheelZoom={false} className="sismo-map-canvas">
         <MapAutoResize />
         <TileLayer
@@ -110,7 +125,7 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
         />
 
         {viewMode === "points" &&
-          quakes.map((q) => {
+          timelapse.displayQuakes.map((q) => {
             const band = severityFor(q.magnitude);
             return (
               <CircleMarker

@@ -22,7 +22,7 @@ export function VolcanoBulletins({ data }) {
 
       {data.boletinDiario && (
         <a href={data.boletinDiario.url} target="_blank" rel="noreferrer" className="volcano-daily-link">
-          📄 Boletín diario (Fuego · Santiaguito · Pacaya) — {data.boletinDiario.fecha}
+          Boletín diario (Fuego · Santiaguito · Pacaya) — {data.boletinDiario.fecha}
         </a>
       )}
     </div>

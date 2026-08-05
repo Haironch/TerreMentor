@@ -4,7 +4,7 @@ import { ShareImageButton } from "./ShareImageButton";
 
 function formatSummary(quake, stats) {
   return [
-    "🌎 Último sismo registrado (INSIVUMEH)",
+    "Último sismo registrado (INSIVUMEH)",
     `Magnitud: ${quake.magnitude}`,
     `Fecha/hora: ${quake.datetime}`,
     `Profundidad: ${quake.depthKm ?? "?"} km`,
@@ -81,7 +81,7 @@ export function LatestQuakeCard({ quake, stats }) {
       </dl>
 
       <div className="latest-card-actions">
-        <button onClick={handleCopy}>{copied ? "Copiado ✓" : "Copiar datos"}</button>
+        <button onClick={handleCopy}>{copied ? "Copiado" : "Copiar datos"}</button>
         <button onClick={handleShare}>Compartir</button>
         <ShareImageButton quake={quake} />
       </div>

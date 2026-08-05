@@ -35,14 +35,13 @@ export function WeatherDashboard() {
       {data && (
         <div className="weather-grid">
           <div className="weather-current">
-            <span className="weather-current-emoji">{current.emoji}</span>
             <div>
               <div className="weather-current-temp">{Math.round(data.current.temperatureC)}°C</div>
               <div className="weather-current-label">{current.label}</div>
             </div>
             <div className="weather-current-extra">
-              <span>💧 {data.current.humidity}%</span>
-              <span>💨 {Math.round(data.current.windKmh)} km/h</span>
+              <span>Humedad: {data.current.humidity}%</span>
+              <span>Viento: {Math.round(data.current.windKmh)} km/h</span>
             </div>
           </div>
 
@@ -52,11 +51,11 @@ export function WeatherDashboard() {
               return (
                 <div key={day.date} className="weather-forecast-day">
                   <span className="weather-forecast-day-label">{dayLabel(day.date, i)}</span>
-                  <span className="weather-forecast-emoji">{desc.emoji}</span>
+                  <span className="weather-forecast-condition">{desc.label}</span>
                   <span className="weather-forecast-temps">
                     <strong>{Math.round(day.tempMaxC)}°</strong> / {Math.round(day.tempMinC)}°
                   </span>
-                  <span className="weather-forecast-rain">☔ {day.precipitationChance}%</span>
+                  <span className="weather-forecast-rain">Prob. lluvia: {day.precipitationChance}%</span>
                 </div>
               );
             })}

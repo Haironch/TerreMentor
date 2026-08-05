@@ -19,7 +19,7 @@ export function AlertSettings({ alerts }) {
   return (
     <div className="alert-settings">
       <button type="button" className="alert-toggle" onClick={() => setOpen((v) => !v)}>
-        🔔 Alertas: {isOn ? `${alerts.settings.radiusKm} km` : "Desactivadas"}
+        Alertas: {isOn ? `${alerts.settings.radiusKm} km` : "Desactivadas"}
       </button>
 
       {open && (

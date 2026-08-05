@@ -10,11 +10,8 @@ export function SafetyTipCard({ quake }) {
   return (
     <div className="tip-card" style={{ "--band-color": band.color }}>
       <div className="tip-card-row">
-        <span className="tip-card-emoji">{tip.emoji}</span>
-        <div>
-          <p className="tip-card-title">¿Qué hacer? · {band.label}</p>
-          <p className="tip-card-text">{tip.tip}</p>
-        </div>
+        <p className="tip-card-title">¿Qué hacer? · {band.label}</p>
+        <p className="tip-card-text">{tip.tip}</p>
       </div>
       <p className="tip-card-note">
         Consejo general, no oficial · en emergencia sigue las indicaciones de{" "}

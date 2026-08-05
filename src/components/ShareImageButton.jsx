@@ -41,7 +41,7 @@ export function ShareImageButton({ quake }) {
   return (
     <>
       <button onClick={handleClick} disabled={busy}>
-        {busy ? "Generando…" : "🖼️ Imagen"}
+        {busy ? "Generando…" : "Imagen"}
       </button>
       <canvas ref={canvasRef} style={{ display: "none" }} />
     </>
