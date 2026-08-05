@@ -14,6 +14,7 @@ import { ZoneRanking } from "./components/ZoneRanking";
 import { AlertSettings } from "./components/AlertSettings";
 import { WeatherDashboard } from "./components/WeatherDashboard";
 import { VolcanoDashboard } from "./components/VolcanoDashboard";
+import { LiveSeismograph } from "./components/LiveSeismograph";
 import { AppSkeleton } from "./components/Skeleton";
 import "./App.css";
 
@@ -56,6 +57,8 @@ function App() {
       )}
 
       {loading && <AppSkeleton />}
+
+      {data && <LiveSeismograph quakes={data.groups?.["SISMOS 24 horas"]?.quakes} />}
 
       {data && (
         <main className="app-grid">
