@@ -476,6 +476,23 @@ body {
   color: #fff;
 }
 
+.fault-toggle {
+  font: inherit;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.fault-toggle.active {
+  background: rgba(167, 139, 250, 0.16);
+  border-color: #a78bfa;
+  color: var(--text-primary);
+}
+
 .sismo-legend {
   display: flex;
   flex-wrap: wrap;

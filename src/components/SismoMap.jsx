@@ -7,7 +7,9 @@ import { severityFor, SEVERITY_BANDS } from "../lib/severity";
 import { HeatmapLayer } from "./HeatmapLayer";
 import { MapAutoResize } from "./MapAutoResize";
 import { TimelapseControls } from "./TimelapseControls";
+import { FaultLinesLayer, FAULT_COLOR, TRENCH_COLOR } from "./FaultLinesLayer";
 import { useTimelapse } from "../hooks/useTimelapse";
+import { useGeologia } from "../hooks/useGeologia";
 
 const GUATEMALA_CENTER = [14.6, -90.6];
 
@@ -58,6 +60,8 @@ function QuakePopup({ q, band }) {
 
 export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
   const [viewMode, setViewMode] = useState("points");
+  const [showFaults, setShowFaults] = useState(true);
+  const geologia = useGeologia();
   const quakes = useMemo(() => groups?.[selectedLayer]?.quakes ?? [], [groups, selectedLayer]);
   const timelapse = useTimelapse(quakes);
   const heatPoints = useMemo(
@@ -90,6 +94,14 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
           ))}
         </div>
 
+        <button
+          type="button"
+          className={`fault-toggle ${showFaults ? "active" : ""}`}
+          onClick={() => setShowFaults((v) => !v)}
+        >
+          Fallas y placas
+        </button>
+
         {viewMode === "points" ? (
           <div className="sismo-legend">
             {SEVERITY_BANDS.map((band) => (
@@ -98,6 +110,18 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
                 {band.label}
               </span>
             ))}
+            {showFaults && (
+              <>
+                <span className="sismo-legend-item">
+                  <i style={{ background: FAULT_COLOR }} />
+                  Fallas principales
+                </span>
+                <span className="sismo-legend-item">
+                  <i style={{ background: TRENCH_COLOR }} />
+                  Fosa Mesoamericana
+                </span>
+              </>
+            )}
           </div>
         ) : (
           <div className="sismo-legend">
@@ -123,6 +147,8 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
+
+        {showFaults && <FaultLinesLayer geologia={geologia} />}
 
         {viewMode === "points" &&
           timelapse.displayQuakes.map((q) => {
