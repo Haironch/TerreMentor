@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://terre-mentor.vercel.app/sitemap.xml
