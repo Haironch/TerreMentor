@@ -485,6 +485,123 @@ body {
   color: var(--text-secondary);
 }
 
+/* ---------- Historical comparison ---------- */
+
+.historical-section {
+  margin-top: 18px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.historical-header {
+  margin-bottom: 14px;
+}
+
+.historical-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.historical-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.historical-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.historical-row {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.historical-row-current {
+  border-color: var(--accent);
+}
+
+.historical-row-labels {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin-bottom: 6px;
+}
+
+.historical-row-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 120px;
+  min-width: 0;
+}
+
+.historical-row-badge {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+.historical-row-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.historical-bar-track {
+  position: relative;
+  height: 18px;
+  background: var(--surface-3, var(--bg));
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.historical-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.historical-bar-value {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+}
+
+.historical-row-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.historical-note {
+  margin: 14px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
 /* ---------- Layout ---------- */
 
 .app-grid {
