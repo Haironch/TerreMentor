@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { drawQuakeShareCard } from "../lib/shareCard";
 
-export function ShareImageButton({ quake }) {
+export function ShareImageButton({ quake, geologia }) {
   const canvasRef = useRef(null);
   const [busy, setBusy] = useState(false);
 
@@ -9,7 +9,7 @@ export function ShareImageButton({ quake }) {
     setBusy(true);
     try {
       const canvas = canvasRef.current;
-      await drawQuakeShareCard(canvas, { quake });
+      await drawQuakeShareCard(canvas, { quake, geologia });
       const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
       if (!blob) throw new Error("No se pudo generar la imagen");
 

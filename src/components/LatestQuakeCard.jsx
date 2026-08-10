@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { severityFor } from "../lib/severity";
+import { nearestFault } from "../lib/nearestFault";
 import { ShareImageButton } from "./ShareImageButton";
 
-function formatSummary(quake, stats) {
+function formatSummary(quake, stats, fault) {
   return [
     "Último sismo registrado (INSIVUMEH)",
     `Magnitud: ${quake.magnitude}`,
     `Fecha/hora: ${quake.datetime}`,
     `Profundidad: ${quake.depthKm ?? "?"} km`,
+    fault ? `Falla más cercana: ${fault.name} (~${Math.round(fault.distanceKm)} km)` : null,
     `Coordenadas: ${quake.lat}, ${quake.lon}`,
     `ID: ${quake.id}`,
     stats?.lastQuakeRelative ? `Hace ${stats.lastQuakeRelative}` : null,
@@ -17,8 +19,12 @@ function formatSummary(quake, stats) {
     .join("\n");
 }
 
-export function LatestQuakeCard({ quake, stats }) {
+export function LatestQuakeCard({ quake, stats, geologia }) {
   const [copied, setCopied] = useState(false);
+  const fault = useMemo(
+    () => (quake ? nearestFault(quake.lat, quake.lon, geologia) : null),
+    [quake, geologia]
+  );
 
   if (!quake) {
     return (
@@ -29,7 +35,7 @@ export function LatestQuakeCard({ quake, stats }) {
   }
 
   const band = severityFor(quake.magnitude);
-  const summary = formatSummary(quake, stats);
+  const summary = formatSummary(quake, stats, fault);
 
   async function handleCopy() {
     try {
@@ -72,6 +78,14 @@ export function LatestQuakeCard({ quake, stats }) {
         <dd>{quake.datetime}</dd>
         <dt>Profundidad</dt>
         <dd>{quake.depthKm ?? "?"} km</dd>
+        {fault && (
+          <>
+            <dt>Falla más cercana</dt>
+            <dd>
+              {fault.name} (~{Math.round(fault.distanceKm)} km)
+            </dd>
+          </>
+        )}
         <dt>Coordenadas</dt>
         <dd>
           {quake.lat}, {quake.lon}
@@ -83,7 +97,7 @@ export function LatestQuakeCard({ quake, stats }) {
       <div className="latest-card-actions">
         <button onClick={handleCopy}>{copied ? "Copiado" : "Copiar datos"}</button>
         <button onClick={handleShare}>Compartir</button>
-        <ShareImageButton quake={quake} />
+        <ShareImageButton quake={quake} geologia={geologia} />
       </div>
     </div>
   );

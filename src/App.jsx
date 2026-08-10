@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSismos } from "./hooks/useSismos";
 import { useQuakeAlerts } from "./hooks/useQuakeAlerts";
+import { useGeologia } from "./hooks/useGeologia";
 import { SismoMap } from "./components/SismoMap";
 import { LatestQuakeCard } from "./components/LatestQuakeCard";
 import { SafetyTipCard } from "./components/SafetyTipCard";
@@ -20,6 +21,7 @@ import "./App.css";
 
 function App() {
   const { data, error, loading, refreshing, refetch } = useSismos();
+  const geologia = useGeologia();
   const [selectedLayer, setSelectedLayer] = useState("SISMOS 1 semana");
 
   const selectedQuakes = data?.groups?.[selectedLayer]?.quakes ?? [];
@@ -67,10 +69,11 @@ function App() {
             selectedLayer={selectedLayer}
             onSelectLayer={setSelectedLayer}
             latest={data.latest}
+            geologia={geologia}
           />
 
           <aside className="app-sidebar">
-            <LatestQuakeCard quake={data.latest} stats={data.stats} />
+            <LatestQuakeCard quake={data.latest} stats={data.stats} geologia={geologia} />
             <SafetyTipCard quake={data.latest} />
             <ZoneRanking quakes={selectedQuakes} />
             <DailyCountChart quakes={selectedQuakes} />

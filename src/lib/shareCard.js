@@ -1,5 +1,6 @@
 import { severityFor } from "./severity";
 import { nearestZone } from "./zones";
+import { nearestFault } from "./nearestFault";
 
 const WIDTH = 1080;
 const HEIGHT = 1350;
@@ -75,7 +76,17 @@ function drawLogo(ctx, x, y, size) {
   ctx.stroke();
 }
 
-export async function drawQuakeShareCard(canvas, { quake, width = WIDTH, height = HEIGHT }) {
+function fitFontSize(ctx, text, maxWidth, family, weight, startSize, minSize = 20) {
+  let size = startSize;
+  ctx.font = `${weight} ${size}px "${family}"`;
+  while (size > minSize && ctx.measureText(text).width > maxWidth) {
+    size -= 2;
+    ctx.font = `${weight} ${size}px "${family}"`;
+  }
+  return size;
+}
+
+export async function drawQuakeShareCard(canvas, { quake, geologia, width = WIDTH, height = HEIGHT }) {
   canvas.width = width;
   canvas.height = height;
   const scale = width / WIDTH;
@@ -86,6 +97,7 @@ export async function drawQuakeShareCard(canvas, { quake, width = WIDTH, height 
 
   const band = severityFor(quake.magnitude);
   const zone = nearestZone(quake.lat, quake.lon);
+  const fault = nearestFault(quake.lat, quake.lon, geologia);
 
   ctx.fillStyle = COLORS.page;
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -146,18 +158,23 @@ export async function drawQuakeShareCard(canvas, { quake, width = WIDTH, height 
   const rows = [
     ["Fecha/hora", quake.datetime],
     ["Zona aproximada", zone],
+    fault ? ["Falla más cercana", `${fault.name} (~${Math.round(fault.distanceKm)} km)`] : null,
     ["Profundidad", `${quake.depthKm ?? "?"} km`],
     ["Coordenadas", `${quake.lat}, ${quake.lon}`],
-  ];
+  ].filter(Boolean);
+
+  const maxValueWidth = WIDTH - padX * 2;
   ctx.textBaseline = "alphabetic";
   for (const [rowLabel, value] of rows) {
     ctx.font = '400 32px "Inter"';
     ctx.fillStyle = COLORS.textMuted;
     ctx.fillText(rowLabel, padX, y);
-    ctx.font = '500 34px "JetBrains Mono"';
+
+    const valueSize = fitFontSize(ctx, value, maxValueWidth, "JetBrains Mono", 500, 34);
+    ctx.font = `500 ${valueSize}px "JetBrains Mono"`;
     ctx.fillStyle = COLORS.textPrimary;
     ctx.fillText(value, padX, y + 44);
-    y += 100;
+    y += 90;
   }
 
   const footerY = HEIGHT - 110;

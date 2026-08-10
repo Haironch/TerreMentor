@@ -9,7 +9,7 @@ import { MapAutoResize } from "./MapAutoResize";
 import { TimelapseControls } from "./TimelapseControls";
 import { FaultLinesLayer, FAULT_COLOR, TRENCH_COLOR } from "./FaultLinesLayer";
 import { useTimelapse } from "../hooks/useTimelapse";
-import { useGeologia } from "../hooks/useGeologia";
+import { nearestFault } from "../lib/nearestFault";
 
 const GUATEMALA_CENTER = [14.6, -90.6];
 
@@ -50,6 +50,12 @@ function QuakePopup({ q, band }) {
       {q.datetime}
       <br />
       Profundidad: {q.depthKm ?? "?"} km
+      {q.fault && (
+        <>
+          <br />
+          {q.fault.name} (~{Math.round(q.fault.distanceKm)} km)
+        </>
+      )}
       <br />
       <a href={`https://geo.insivumeh.gob.gt/IMM/HISTORICO/${q.id}`} target="_blank" rel="noreferrer">
         Ver ficha en INSIVUMEH
@@ -58,11 +64,18 @@ function QuakePopup({ q, band }) {
   );
 }
 
-export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
+export function SismoMap({ groups, selectedLayer, onSelectLayer, latest, geologia }) {
   const [viewMode, setViewMode] = useState("points");
   const [showFaults, setShowFaults] = useState(true);
-  const geologia = useGeologia();
-  const quakes = useMemo(() => groups?.[selectedLayer]?.quakes ?? [], [groups, selectedLayer]);
+  const rawQuakes = useMemo(() => groups?.[selectedLayer]?.quakes ?? [], [groups, selectedLayer]);
+  const quakes = useMemo(
+    () => rawQuakes.map((q) => ({ ...q, fault: nearestFault(q.lat, q.lon, geologia) })),
+    [rawQuakes, geologia]
+  );
+  const latestWithFault = useMemo(
+    () => (latest ? { ...latest, fault: nearestFault(latest.lat, latest.lon, geologia) } : null),
+    [latest, geologia]
+  );
   const timelapse = useTimelapse(quakes);
   const heatPoints = useMemo(
     () => timelapse.displayQuakes.map((q) => [q.lat, q.lon, q.magnitude]),
@@ -167,9 +180,9 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest }) {
 
         {viewMode === "heat" && <HeatmapLayer points={heatPoints} />}
 
-        {latest && (
-          <Marker position={[latest.lat, latest.lon]} icon={pulseIcon}>
-            <QuakePopup q={latest} band={severityFor(latest.magnitude)} />
+        {latestWithFault && (
+          <Marker position={[latestWithFault.lat, latestWithFault.lon]} icon={pulseIcon}>
+            <QuakePopup q={latestWithFault} band={severityFor(latestWithFault.magnitude)} />
           </Marker>
         )}
       </MapContainer>
