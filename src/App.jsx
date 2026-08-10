@@ -16,6 +16,7 @@ import { AlertSettings } from "./components/AlertSettings";
 import { WeatherDashboard } from "./components/WeatherDashboard";
 import { VolcanoDashboard } from "./components/VolcanoDashboard";
 import { LiveSeismograph } from "./components/LiveSeismograph";
+import { IntensityDashboard } from "./components/IntensityDashboard";
 import { AppSkeleton } from "./components/Skeleton";
 import "./App.css";
 
@@ -81,6 +82,8 @@ function App() {
           </aside>
         </main>
       )}
+
+      {data?.latest && <IntensityDashboard quake={data.latest} />}
 
       <VolcanoDashboard />
       <WeatherDashboard />

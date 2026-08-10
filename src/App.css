@@ -397,6 +397,94 @@ body {
   color: var(--text-muted);
 }
 
+/* ---------- Intensity dashboard ---------- */
+
+.intensity-section {
+  margin-top: 18px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.intensity-header {
+  margin-bottom: 14px;
+}
+
+.intensity-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.intensity-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.intensity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.intensity-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--level-color, var(--accent));
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.intensity-chip-rank {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 16px;
+}
+
+.intensity-chip-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.intensity-chip-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.intensity-chip-level {
+  font-size: 11px;
+  color: var(--level-color, var(--text-secondary));
+}
+
+.intensity-chip-distance {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.intensity-note {
+  margin: 14px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.intensity-note a {
+  color: var(--text-secondary);
+}
+
 /* ---------- Layout ---------- */
 
 .app-grid {
