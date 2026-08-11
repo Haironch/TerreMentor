@@ -20,6 +20,7 @@ import { LiveSeismograph } from "./components/LiveSeismograph";
 import { IntensityDashboard } from "./components/IntensityDashboard";
 import { HistoricalComparison } from "./components/HistoricalComparison";
 import { AppSkeleton } from "./components/Skeleton";
+import { SplashScreen } from "./components/SplashScreen";
 import "./App.css";
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
 
   return (
     <div className="app">
+      <SplashScreen ready={!loading} />
       <div className="app-glow" aria-hidden="true" />
 
       <header className="app-header">
@@ -83,11 +85,11 @@ function App() {
             <DailyCountChart quakes={selectedQuakes} />
             <MagnitudeChart quakes={selectedQuakes} />
           </aside>
+
+          {data?.latest && <IntensityDashboard quake={data.latest} />}
+          {data?.latest && <HistoricalComparison quake={data.latest} />}
         </main>
       )}
-
-      {data?.latest && <IntensityDashboard quake={data.latest} />}
-      {data?.latest && <HistoricalComparison quake={data.latest} />}
 
       <VolcanoDashboard />
       <WeatherDashboard />

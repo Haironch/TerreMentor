@@ -70,6 +70,70 @@ body {
   z-index: -1;
 }
 
+/* ---------- Splash ---------- */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: var(--page);
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.splash-leaving {
+  opacity: 0;
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+.splash-wave {
+  width: min(280px, 70vw);
+  height: auto;
+  overflow: visible;
+}
+
+.splash-wave-path {
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: splash-draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+.splash-wave-dot {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 5px var(--accent-glow));
+}
+
+@keyframes splash-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.splash-label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-wave-path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
 /* ---------- Header ---------- */
 
 .app-header-top {
@@ -400,7 +464,7 @@ body {
 /* ---------- Intensity dashboard ---------- */
 
 .intensity-section {
-  margin-top: 18px;
+  grid-area: intensity;
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -488,7 +552,7 @@ body {
 /* ---------- Historical comparison ---------- */
 
 .historical-section {
-  margin-top: 18px;
+  grid-area: historical;
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -607,6 +671,10 @@ body {
 .app-grid {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-areas:
+    "map sidebar"
+    "intensity sidebar"
+    "historical sidebar";
   gap: 16px;
   align-items: start;
   margin-top: 18px;
@@ -615,10 +683,16 @@ body {
 @media (max-width: 860px) {
   .app-grid {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "map"
+      "sidebar"
+      "intensity"
+      "historical";
   }
 }
 
 .app-sidebar {
+  grid-area: sidebar;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -627,6 +701,7 @@ body {
 /* ---------- Map ---------- */
 
 .sismo-map {
+  grid-area: map;
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: 12px;
