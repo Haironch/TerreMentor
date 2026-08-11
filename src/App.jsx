@@ -5,6 +5,7 @@ import { useGeologia } from "./hooks/useGeologia";
 import { SismoMap } from "./components/SismoMap";
 import { LatestQuakeCard } from "./components/LatestQuakeCard";
 import { SafetyTipCard } from "./components/SafetyTipCard";
+import { NearYou } from "./components/NearYou";
 import { DailyCountChart } from "./components/DailyCountChart";
 import { MagnitudeChart } from "./components/MagnitudeChart";
 import { RefreshButton } from "./components/RefreshButton";
@@ -77,6 +78,7 @@ function App() {
           <aside className="app-sidebar">
             <LatestQuakeCard quake={data.latest} stats={data.stats} geologia={geologia} />
             <SafetyTipCard quake={data.latest} />
+            <NearYou quake={data.latest} geologia={geologia} />
             <ZoneRanking quakes={selectedQuakes} />
             <DailyCountChart quakes={selectedQuakes} />
             <MagnitudeChart quakes={selectedQuakes} />
