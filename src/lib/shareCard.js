@@ -1,6 +1,8 @@
 import { severityFor } from "./severity";
 import { nearestZone } from "./zones";
 import { nearestFault } from "./nearestFault";
+import { HISTORICAL_QUAKES } from "./historicalQuakes";
+import { describeEnergyComparison } from "./energyComparison";
 
 const WIDTH = 1080;
 const HEIGHT = 1350;
@@ -28,12 +30,29 @@ const LOGO_PATH = [
   [36, 21],
 ];
 
+// Onda decorativa de sismógrafo — mismo lenguaje visual que el logo y el
+// splash de bienvenida, usada como fondo sutil (no lleva datos).
+const DECOR_WAVE = [
+  [0, 40],
+  [140, 40],
+  [175, 8],
+  [210, 72],
+  [245, 0],
+  [280, 80],
+  [315, 30],
+  [350, 50],
+  [385, 36],
+  [1080, 40],
+];
+
 async function ensureFonts() {
   const specs = [
     '700 44px "Space Grotesk"',
     '700 220px "Space Grotesk"',
     '600 30px "Inter"',
     '600 32px "Inter"',
+    '600 24px "Inter"',
+    '600 38px "Inter"',
     '500 40px "Inter"',
     '400 32px "Inter"',
     '400 28px "Inter"',
@@ -74,6 +93,26 @@ function drawLogo(ctx, x, y, size) {
     else ctx.lineTo(cx, cy);
   });
   ctx.stroke();
+}
+
+function drawDecorWave(ctx, x, y, width, height, color, opacity) {
+  const scaleX = width / 1080;
+  const scaleY = height / 80;
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  DECOR_WAVE.forEach(([px, py], i) => {
+    const cx = x + px * scaleX;
+    const cy = y + py * scaleY;
+    if (i === 0) ctx.moveTo(cx, cy);
+    else ctx.lineTo(cx, cy);
+  });
+  ctx.stroke();
+  ctx.restore();
 }
 
 function fitFontSize(ctx, text, maxWidth, family, weight, startSize, minSize = 20) {
@@ -153,19 +192,25 @@ export async function drawQuakeShareCard(canvas, { quake, geologia, width = WIDT
   ctx.textBaseline = "middle";
   ctx.fillText(label, padX + 32, y + pillH / 2 + 2);
 
-  y += pillH + 80;
+  y += pillH + 56;
+
+  drawDecorWave(ctx, padX, y, WIDTH - padX * 2, 60, band.color, 0.16);
+
+  y += 90;
 
   const rows = [
     ["Fecha/hora", quake.datetime],
-    ["Zona aproximada", zone],
-    fault ? ["Falla más cercana", `${fault.name} (~${Math.round(fault.distanceKm)} km)`] : null,
+    ["Ubicación", fault ? `${zone} · ${fault.name} (~${Math.round(fault.distanceKm)} km)` : zone],
     ["Profundidad", `${quake.depthKm ?? "?"} km`],
     ["Coordenadas", `${quake.lat}, ${quake.lon}`],
-  ].filter(Boolean);
+  ];
 
   const maxValueWidth = WIDTH - padX * 2;
   ctx.textBaseline = "alphabetic";
   for (const [rowLabel, value] of rows) {
+    ctx.fillStyle = band.color;
+    ctx.fillRect(padX - 24, y - 34, 4, 56);
+
     ctx.font = '400 32px "Inter"';
     ctx.fillStyle = COLORS.textMuted;
     ctx.fillText(rowLabel, padX, y);
@@ -174,10 +219,42 @@ export async function drawQuakeShareCard(canvas, { quake, geologia, width = WIDT
     ctx.font = `500 ${valueSize}px "JetBrains Mono"`;
     ctx.fillStyle = COLORS.textPrimary;
     ctx.fillText(value, padX, y + 44);
-    y += 90;
+    y += 80;
   }
 
-  const footerY = HEIGHT - 110;
+  // Para sismos leves la comparación con 1976 da ratios absurdamente
+  // grandes (millones de veces) que restan seriedad — solo se muestra
+  // cuando el sismo es lo bastante fuerte para que la comparación tenga
+  // sentido narrativo.
+  const historic = quake.magnitude >= 5 ? HISTORICAL_QUAKES.find((q) => q.id === "1976") : null;
+  if (historic) {
+    y += 16;
+    const boxH = 104;
+    roundRect(ctx, padX, y, WIDTH - padX * 2, boxH, 16);
+    ctx.fillStyle = "rgba(255,255,255,0.04)";
+    ctx.fill();
+    ctx.strokeStyle = COLORS.border;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = COLORS.accent;
+    ctx.fillRect(padX, y, 4, boxH);
+
+    const historicYear = historic.date.split(" de ").pop();
+    ctx.textBaseline = "alphabetic";
+    ctx.font = '600 24px "Inter"';
+    ctx.fillStyle = COLORS.textMuted;
+    ctx.fillText(`COMPARADO CON EL TERREMOTO DE ${historicYear}`, padX + 32, y + 38);
+
+    const comparisonText = `Ese sismo (M${historic.magnitude}) ${describeEnergyComparison(historic.magnitude, quake.magnitude)} que este.`;
+    const compSize = fitFontSize(ctx, comparisonText, WIDTH - padX * 2 - 64, "Inter", 600, 38, 26);
+    ctx.font = `600 ${compSize}px "Inter"`;
+    ctx.fillStyle = COLORS.textPrimary;
+    ctx.fillText(comparisonText, padX + 32, y + 80);
+
+    y += boxH;
+  }
+
+  const footerY = y + 60;
   ctx.strokeStyle = COLORS.border;
   ctx.lineWidth = 2;
   ctx.beginPath();
