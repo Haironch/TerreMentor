@@ -53,6 +53,7 @@ async function ensureFonts() {
     '600 32px "Inter"',
     '600 24px "Inter"',
     '600 38px "Inter"',
+    '600 22px "Inter"',
     '500 40px "Inter"',
     '400 32px "Inter"',
     '400 28px "Inter"',
@@ -115,6 +116,77 @@ function drawDecorWave(ctx, x, y, width, height, color, opacity) {
   ctx.restore();
 }
 
+async function loadGuatemalaOutline() {
+  try {
+    const res = await fetch("/geo/guatemala-outline.json");
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+function projectPoint(lon, lat, bounds, boxX, boxY, boxSize, padding) {
+  const lonSpan = bounds.maxLon - bounds.minLon;
+  const latSpan = bounds.maxLat - bounds.minLat;
+  const scale = (boxSize - padding * 2) / Math.max(lonSpan, latSpan);
+  const w = lonSpan * scale;
+  const h = latSpan * scale;
+  const offsetX = boxX + (boxSize - w) / 2;
+  const offsetY = boxY + (boxSize - h) / 2;
+  return [offsetX + (lon - bounds.minLon) * scale, offsetY + (bounds.maxLat - lat) * scale];
+}
+
+function drawMiniMap(ctx, { quake, outline, band, boxX, boxY, boxSize }) {
+  roundRect(ctx, boxX, boxY, boxSize, boxSize, 20);
+  ctx.fillStyle = "rgba(255,255,255,0.03)";
+  ctx.fill();
+  ctx.strokeStyle = COLORS.border;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  if (!outline?.ring) return;
+
+  const padding = 28;
+  const lons = outline.ring.map((p) => p[0]);
+  const lats = outline.ring.map((p) => p[1]);
+  const bounds = { minLon: Math.min(...lons), maxLon: Math.max(...lons), minLat: Math.min(...lats), maxLat: Math.max(...lats) };
+
+  ctx.save();
+  roundRect(ctx, boxX, boxY, boxSize, boxSize, 20);
+  ctx.clip();
+
+  ctx.beginPath();
+  outline.ring.forEach(([lon, lat], i) => {
+    const [x, y] = projectPoint(lon, lat, bounds, boxX, boxY, boxSize, padding);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = "rgba(255,255,255,0.05)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,0.35)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  const [ex, ey] = projectPoint(quake.lon, quake.lat, bounds, boxX, boxY, boxSize, padding);
+  ctx.fillStyle = `${band.color}33`;
+  ctx.beginPath();
+  ctx.arc(ex, ey, 16, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = band.color;
+  ctx.beginPath();
+  ctx.arc(ex, ey, 7, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+
+  ctx.font = '600 22px "Inter"';
+  ctx.fillStyle = COLORS.textMuted;
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText("GUATEMALA", boxX + 20, boxY + 30);
+}
+
 function fitFontSize(ctx, text, maxWidth, family, weight, startSize, minSize = 20) {
   let size = startSize;
   ctx.font = `${weight} ${size}px "${family}"`;
@@ -132,7 +204,7 @@ export async function drawQuakeShareCard(canvas, { quake, geologia, width = WIDT
   const ctx = canvas.getContext("2d");
   ctx.scale(scale, scale);
 
-  await ensureFonts();
+  const [, outline] = await Promise.all([ensureFonts(), loadGuatemalaOutline()]);
 
   const band = severityFor(quake.magnitude);
   const zone = nearestZone(quake.lat, quake.lon);
@@ -166,6 +238,16 @@ export async function drawQuakeShareCard(canvas, { quake, geologia, width = WIDT
   ctx.font = '600 30px "Inter"';
   ctx.fillStyle = COLORS.textMuted;
   ctx.fillText("ÚLTIMO SISMO REGISTRADO", padX, y);
+
+  const mapBoxSize = 260;
+  drawMiniMap(ctx, {
+    quake,
+    outline,
+    band,
+    boxX: WIDTH - padX - mapBoxSize,
+    boxY: y - 10,
+    boxSize: mapBoxSize,
+  });
 
   y += 210;
   ctx.font = '700 220px "Space Grotesk"';
