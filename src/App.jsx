@@ -99,7 +99,8 @@ function App() {
         <a href="https://geo.insivumeh.gob.gt/sismo" target="_blank" rel="noreferrer">
           INSIVUMEH
         </a>{" "}
-        · Proyecto comunitario sin fines de lucro.
+        · Proyecto comunitario sin fines de lucro. ·{" "}
+        <a href="/privacidad.html">Política de privacidad</a>
       </footer>
     </div>
   );

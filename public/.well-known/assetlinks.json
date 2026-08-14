@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "gt.terrementor.app",
+      "sha256_cert_fingerprints": [
+        "72:E2:05:27:5B:5D:83:CE:97:0C:D2:B9:2B:C3:CD:71:ED:17:58:F6:07:61:F8:B7:AB:C4:2D:D0:6F:2B:F0:0B"
+      ]
+    }
+  }
+]

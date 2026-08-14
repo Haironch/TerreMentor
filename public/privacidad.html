@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es-GT">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0d12" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Política de privacidad · TerreMentor</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --page: #0a0d12;
+        --surface-1: #12161d;
+        --border: rgba(255, 255, 255, 0.08);
+        --text-primary: #f2f4f7;
+        --text-secondary: #9aa4b2;
+        --text-muted: #6b7480;
+        --accent: #3987e5;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        font-size: 26px;
+        margin: 0 0 6px;
+      }
+      .updated {
+        color: var(--text-muted);
+        font-size: 13px;
+        margin: 0 0 36px;
+      }
+      h2 {
+        font-size: 17px;
+        margin: 36px 0 10px;
+        border-top: 1px solid var(--border);
+        padding-top: 24px;
+      }
+      p,
+      li {
+        color: var(--text-secondary);
+        font-size: 15px;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      .back {
+        display: inline-block;
+        margin-bottom: 24px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 14px;
+      }
+      .back:hover {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="/">← Volver a TerreMentor</a>
+      <h1>Política de privacidad</h1>
+      <p class="updated">Última actualización: agosto de 2026</p>
+
+      <p>
+        TerreMentor es un proyecto comunitario sin fines de lucro para monitorear sismos, volcanes
+        y clima en Guatemala. No tiene cuentas de usuario, no vende datos, y no usa publicidad ni
+        rastreadores de terceros. Esta página explica en detalle qué información toca la app.
+      </p>
+
+      <h2>Ubicación</h2>
+      <p>
+        La app pide acceso a tu ubicación solo si vos decidís activarla, en dos lugares puntuales:
+      </p>
+      <ul>
+        <li>
+          El panel "Cerca de ti", para calcular la falla más cercana y la intensidad estimada en tu
+          punto exacto. Este cálculo ocurre enteramente en tu navegador — tu ubicación nunca se
+          envía a ningún servidor de TerreMentor.
+        </li>
+        <li>
+          Las alertas de sismos cercanos, si las activás. En este caso tu ubicación (y el radio que
+          elijas) se guarda únicamente en el almacenamiento local de tu propio dispositivo
+          (localStorage), para poder comparar la distancia cuando llega un sismo nuevo. Nunca sale
+          de tu dispositivo ni se sube a ningún servidor.
+        </li>
+      </ul>
+      <p>Podés borrar esta información en cualquier momento desactivando las alertas o borrando los datos del sitio desde tu navegador.</p>
+
+      <h2>Notificaciones</h2>
+      <p>
+        Si activás las alertas, tu navegador te pedirá permiso para mostrar notificaciones. Se usan
+        únicamente para avisarte de sismos sensibles cerca del radio que configuraste — no se usan
+        para publicidad ni ningún otro fin.
+      </p>
+
+      <h2>Datos que mostramos</h2>
+      <p>
+        Los datos sísmicos y volcánicos vienen de fuentes públicas de INSIVUMEH, y los datos de
+        clima de Open-Meteo. Son datos públicos e institucionales, no datos personales de nadie.
+      </p>
+
+      <h2>Almacenamiento local y modo offline</h2>
+      <p>
+        TerreMentor funciona como aplicación instalable (PWA) y guarda en caché en tu dispositivo
+        los datos recientes y los mapas para que la app cargue más rápido y funcione parcialmente
+        sin conexión. Esta caché vive solo en tu dispositivo.
+      </p>
+
+      <h2>Lo que no hacemos</h2>
+      <ul>
+        <li>No creamos cuentas de usuario ni pedimos datos personales como nombre o correo.</li>
+        <li>No usamos cookies de rastreo ni analítica de terceros.</li>
+        <li>No vendemos ni compartimos información con nadie.</li>
+      </ul>
+
+      <h2>Cambios a esta política</h2>
+      <p>
+        Si algo cambia en cómo la app maneja datos, esta página se actualiza con la fecha
+        correspondiente.
+      </p>
+
+      <h2>Contacto</h2>
+      <p>
+        Este es un proyecto de código abierto desarrollado por
+        <a href="https://hairch.dev" target="_blank" rel="noreferrer">hairch.dev</a>. Para
+        preguntas o reportar algo, podés abrir un issue en
+        <a href="https://github.com/Haironch/TerreMentor" target="_blank" rel="noreferrer"
+          >el repositorio en GitHub</a
+        >.
+      </p>
+    </main>
+  </body>
+</html>
