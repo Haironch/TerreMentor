@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { getSismos } from './api/_lib/fetchSismos.js'
 import { getClima } from './api/_lib/fetchClima.js'
 import { getVolcanes } from './api/_lib/fetchVolcanes.js'
+import { getWorldQuakes } from './api/_lib/fetchWorldQuakes.js'
 
 // Simula en desarrollo la función serverless de api/sismos.js (que en
 // producción correría en Vercel/Cloudflare). Así `npm run dev` sirve datos
@@ -129,7 +130,34 @@ const pwaPlugin = VitePWA({
   },
 })
 
+function worldQuakesApiDevMiddleware() {
+  return {
+    name: 'world-quakes-api-dev-middleware',
+    configureServer(server) {
+      server.middlewares.use('/api/world-quakes', async (req, res) => {
+        try {
+          const force = new URL(req.url, 'http://localhost').searchParams.get('force') === '1'
+          const data = await getWorldQuakes({ force })
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify(data))
+        } catch (err) {
+          res.statusCode = 502
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: 'No se pudo obtener datos del USGS', detail: err.message }))
+        }
+      })
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), sismosApiDevMiddleware(), climaApiDevMiddleware(), volcanesApiDevMiddleware(), pwaPlugin],
+  plugins: [
+    react(),
+    sismosApiDevMiddleware(),
+    climaApiDevMiddleware(),
+    volcanesApiDevMiddleware(),
+    worldQuakesApiDevMiddleware(),
+    pwaPlugin,
+  ],
 })

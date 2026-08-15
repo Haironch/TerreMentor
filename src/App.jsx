@@ -16,6 +16,7 @@ import { ZoneRanking } from "./components/ZoneRanking";
 import { AlertSettings } from "./components/AlertSettings";
 import { WeatherDashboard } from "./components/WeatherDashboard";
 import { VolcanoDashboard } from "./components/VolcanoDashboard";
+import { WorldQuakesDashboard } from "./components/WorldQuakesDashboard";
 import { LiveSeismograph } from "./components/LiveSeismograph";
 import { IntensityDashboard } from "./components/IntensityDashboard";
 import { HistoricalComparison } from "./components/HistoricalComparison";
@@ -93,6 +94,7 @@ function App() {
 
       <VolcanoDashboard />
       <WeatherDashboard />
+      <WorldQuakesDashboard />
 
       <footer className="app-footer">
         Monitoreo comunitario de sismos en Guatemala y Centroamérica, con datos públicos de{" "}

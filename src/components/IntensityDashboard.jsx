@@ -1,10 +1,16 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { rankDepartmentIntensity } from "../lib/intensity";
 
+const COLLAPSED_COUNT = 6;
+
 export function IntensityDashboard({ quake }) {
+  const [expanded, setExpanded] = useState(false);
   const ranked = useMemo(() => (quake ? rankDepartmentIntensity(quake) : []), [quake]);
 
   if (!quake) return null;
+
+  const visible = expanded ? ranked : ranked.slice(0, COLLAPSED_COUNT);
+  const hasMore = ranked.length > COLLAPSED_COUNT;
 
   return (
     <section className="intensity-section">
@@ -16,7 +22,7 @@ export function IntensityDashboard({ quake }) {
       </div>
 
       <div className="intensity-grid">
-        {ranked.map((d, i) => (
+        {visible.map((d, i) => (
           <div key={d.name} className="intensity-chip" style={{ "--level-color": d.level.color }}>
             <span className="intensity-chip-rank">{i + 1}</span>
             <div className="intensity-chip-body">
@@ -27,6 +33,13 @@ export function IntensityDashboard({ quake }) {
           </div>
         ))}
       </div>
+
+      {hasMore && (
+        <button className="intensity-toggle" onClick={() => setExpanded((v) => !v)}>
+          {expanded ? "Ver menos" : `Ver los ${ranked.length} departamentos`}
+          <span className={`intensity-toggle-chevron${expanded ? " intensity-toggle-chevron-up" : ""}`}>▾</span>
+        </button>
+      )}
 
       <p className="intensity-note">
         Estimación aproximada basada en magnitud, profundidad y distancia (escala de Mercalli
