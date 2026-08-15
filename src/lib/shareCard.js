@@ -284,12 +284,12 @@ export async function drawQuakeShareCard(canvas, { quake, geologia, width = WIDT
   ctx.fillStyle = COLORS.textMuted;
   ctx.fillText("ÚLTIMO SISMO REGISTRADO", padX, y);
 
-  const mapBoxSize = 260;
+  const mapBoxSize = 300;
   await drawEpicenterMap(ctx, {
     quake,
     band,
     boxX: WIDTH - padX - mapBoxSize,
-    boxY: y - 10,
+    boxY: y - 50,
     boxSize: mapBoxSize,
   });
 
