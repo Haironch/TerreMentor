@@ -1,9 +1,6 @@
-import { useMemo, useState } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useState } from "react";
 import { useWorldQuakes } from "../hooks/useWorldQuakes";
-
-const gridColor = "#232a33";
-const inkColor = "#6b7480";
+import { WorldQuakesMap } from "./WorldQuakesMap";
 
 // Escala propia para este dashboard: todos los sismos aquí son ≥6.5, así
 // que las bandas de severidad pensadas para Guatemala (0–5) no sirven para
@@ -33,37 +30,13 @@ function rgb([r, g, b]) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-function formatShortDate(iso) {
-  return new Date(iso).toLocaleDateString("es-GT", { day: "numeric", month: "short" });
-}
-
 function formatFullDate(iso) {
   return new Date(iso).toLocaleDateString("es-GT", { day: "numeric", month: "long", year: "numeric" });
-}
-
-function ChartTooltip({ active, payload }) {
-  if (!active || !payload?.length) return null;
-  const q = payload[0].payload;
-  return (
-    <div className="chart-tooltip">
-      <strong>Magnitud {q.magnitude}</strong>
-      <div>{q.place}</div>
-      <div>{formatShortDate(q.time)}</div>
-    </div>
-  );
 }
 
 export function WorldQuakesDashboard() {
   const { data, error, loading } = useWorldQuakes();
   const [revealed, setRevealed] = useState(false);
-
-  const chartData = useMemo(
-    () =>
-      [...(data?.quakes ?? [])]
-        .sort((a, b) => new Date(a.time) - new Date(b.time))
-        .map((q) => ({ ...q, dateLabel: formatShortDate(q.time), color: magnitudeColor(q.magnitude) })),
-    [data]
-  );
 
   if (loading) return <div className="skeleton skeleton-card-sm" />;
   if (error || !data?.quakes?.length) return null;
@@ -116,26 +89,8 @@ export function WorldQuakesDashboard() {
       </div>
 
       <div className="world-quakes-chart">
-        <h3>Patrón a lo largo del año</h3>
-        <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid vertical={false} stroke={gridColor} />
-            <XAxis dataKey="dateLabel" tick={{ fill: inkColor, fontSize: 10 }} axisLine={{ stroke: gridColor }} tickLine={false} />
-            <YAxis
-              tick={{ fill: inkColor, fontSize: 11 }}
-              axisLine={false}
-              tickLine={false}
-              width={28}
-              domain={[6, "dataMax + 0.3"]}
-            />
-            <Tooltip content={<ChartTooltip />} cursor={{ fill: gridColor }} />
-            <Bar dataKey="magnitude" radius={[4, 4, 0, 0]} maxBarSize={28}>
-              {chartData.map((q) => (
-                <Cell key={q.id} fill={q.color} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <h3>Recorrido del año</h3>
+        <WorldQuakesMap quakes={data.quakes} colorFor={magnitudeColor} />
       </div>
 
       <p className="world-quakes-note">

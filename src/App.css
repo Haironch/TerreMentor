@@ -1633,6 +1633,19 @@ body {
   color: var(--text-secondary);
 }
 
+.world-quakes-map {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.world-quakes-map-canvas {
+  height: 320px;
+  width: 100%;
+  background: var(--surface-1) !important;
+}
+
 .world-quakes-note {
   margin: 14px 0 0;
   font-size: 11px;
