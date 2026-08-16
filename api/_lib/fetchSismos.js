@@ -1,7 +1,7 @@
 import { parseSismosHtml } from "./parseSismos.js";
 
 const SOURCE_URL = "https://geo.insivumeh.gob.gt/sismo";
-const TTL_MS = 60_000;
+const TTL_MS = 30_000;
 // Aun con "force" (botón de refresco manual), nunca pedimos el HTML a
 // INSIVUMEH más seguido que esto, para que un uso descuidado del botón no
 // termine golpeando su servidor.

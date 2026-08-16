@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const POLL_MS = 3 * 60 * 1000;
+const POLL_MS = 45 * 1000;
 
 export function useSismos() {
   const [data, setData] = useState(null);
