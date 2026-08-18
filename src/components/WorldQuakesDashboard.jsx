@@ -1,6 +1,65 @@
 import { useState } from "react";
+import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useWorldQuakes } from "../hooks/useWorldQuakes";
+import { useQuakeYears } from "../hooks/useQuakeYears";
 import { WorldQuakesMap } from "./WorldQuakesMap";
+
+const gridColor = "#232a33";
+const inkColor = "#6b7480";
+const YEAR_BAR_COLOR = "#3987e5";
+const YEAR_BAR_COLOR_PARTIAL = "rgba(57, 135, 229, 0.35)";
+
+function YearsTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  const y = payload[0].payload;
+  return (
+    <div className="chart-tooltip">
+      <strong>
+        {y.year}
+        {y.partial ? " (en curso)" : ""}
+      </strong>
+      <div>{y.count} sismos</div>
+    </div>
+  );
+}
+
+function QuakeYearsChart() {
+  const { data, error, loading } = useQuakeYears();
+
+  if (loading || error || !data?.years?.length) return null;
+
+  return (
+    <div className="world-quakes-chart">
+      <h3>Comparativa por año</h3>
+      <p className="world-quakes-subtitle">
+        Cantidad de sismos de magnitud {data.minMagnitude}+ a nivel mundial, por año, según el USGS.
+      </p>
+      <ResponsiveContainer width="100%" height={180}>
+        <BarChart data={data.years} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+          <CartesianGrid vertical={false} stroke={gridColor} />
+          <XAxis dataKey="year" tick={{ fill: inkColor, fontSize: 11 }} axisLine={{ stroke: gridColor }} tickLine={false} />
+          <YAxis tick={{ fill: inkColor, fontSize: 11 }} axisLine={false} tickLine={false} width={28} allowDecimals={false} />
+          <Tooltip content={<YearsTooltip />} cursor={{ fill: gridColor }} />
+          <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={40}>
+            {data.years.map((y) => (
+              <Cell
+                key={y.year}
+                fill={y.partial ? YEAR_BAR_COLOR_PARTIAL : YEAR_BAR_COLOR}
+                stroke={y.partial ? YEAR_BAR_COLOR : "none"}
+                strokeDasharray={y.partial ? "4 3" : "0"}
+                strokeWidth={y.partial ? 1.5 : 0}
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+      <p className="world-quakes-note">
+        El año en curso se ve más claro y punteado — todavía no termina, así que no es comparable
+        directo contra los años completos.
+      </p>
+    </div>
+  );
+}
 
 // Escala propia para este dashboard: todos los sismos aquí son ≥6.5, así
 // que las bandas de severidad pensadas para Guatemala (0–5) no sirven para
@@ -92,6 +151,8 @@ export function WorldQuakesDashboard() {
         <h3>Recorrido del año</h3>
         <WorldQuakesMap quakes={data.quakes} colorFor={magnitudeColor} />
       </div>
+
+      <QuakeYearsChart />
 
       <p className="world-quakes-note">
         Datos en vivo del{" "}
