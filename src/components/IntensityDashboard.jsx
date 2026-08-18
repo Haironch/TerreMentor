@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import { rankDepartmentIntensity } from "../lib/intensity";
+import { useTrembleReveal } from "../hooks/useTrembleReveal";
 
 const COLLAPSED_COUNT = 6;
 
 export function IntensityDashboard({ quake }) {
   const [expanded, setExpanded] = useState(false);
   const ranked = useMemo(() => (quake ? rankDepartmentIntensity(quake) : []), [quake]);
+  const tremble = useTrembleReveal();
 
   if (!quake) return null;
 
@@ -13,7 +15,7 @@ export function IntensityDashboard({ quake }) {
   const hasMore = ranked.length > COLLAPSED_COUNT;
 
   return (
-    <section className="intensity-section">
+    <section ref={tremble.ref} className={`intensity-section ${tremble.className}`}>
       <div className="intensity-header">
         <h2>Intensidad estimada por departamento</h2>
         <p className="intensity-subtitle">

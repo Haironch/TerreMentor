@@ -1,12 +1,14 @@
 import { useVolcanoStatus } from "../hooks/useVolcanoStatus";
 import { VolcanoCams } from "./VolcanoCams";
 import { VolcanoBulletins } from "./VolcanoBulletins";
+import { useTrembleReveal } from "../hooks/useTrembleReveal";
 
 export function VolcanoDashboard() {
   const { data, error, loading } = useVolcanoStatus();
+  const tremble = useTrembleReveal();
 
   return (
-    <section className="volcano-section">
+    <section ref={tremble.ref} className={`volcano-section ${tremble.className}`}>
       <div className="volcano-header">
         <h2>Volcanes</h2>
         <p className="volcano-subtitle">Cámaras en vivo y boletines de INSIVUMEH</p>

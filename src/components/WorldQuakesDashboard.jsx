@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useWorldQuakes } from "../hooks/useWorldQuakes";
 import { useQuakeYears } from "../hooks/useQuakeYears";
+import { useTrembleReveal } from "../hooks/useTrembleReveal";
 import { WorldQuakesMap } from "./WorldQuakesMap";
 
 const gridColor = "#232a33";
@@ -96,12 +97,13 @@ function formatFullDate(iso) {
 export function WorldQuakesDashboard() {
   const { data, error, loading } = useWorldQuakes();
   const [revealed, setRevealed] = useState(false);
+  const tremble = useTrembleReveal();
 
   if (loading) return <div className="skeleton skeleton-card-sm" />;
   if (error || !data?.quakes?.length) return null;
 
   return (
-    <section className="world-quakes-section">
+    <section ref={tremble.ref} className={`world-quakes-section ${tremble.className}`}>
       <div className="world-quakes-header">
         <h2>Los terremotos más grandes de {data.year}</h2>
         <p className="world-quakes-subtitle">

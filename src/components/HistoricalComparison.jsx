@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { HISTORICAL_QUAKES } from "../lib/historicalQuakes";
 import { severityFor } from "../lib/severity";
 import { describeEnergyComparison } from "../lib/energyComparison";
+import { useTrembleReveal } from "../hooks/useTrembleReveal";
 
 const MAX_SCALE = 9;
 
@@ -18,11 +19,12 @@ export function HistoricalComparison({ quake }) {
     };
     return [current, ...HISTORICAL_QUAKES].sort((a, b) => b.magnitude - a.magnitude);
   }, [quake]);
+  const tremble = useTrembleReveal();
 
   if (!quake) return null;
 
   return (
-    <section className="historical-section">
+    <section ref={tremble.ref} className={`historical-section ${tremble.className}`}>
       <div className="historical-header">
         <h2>Comparación con sismos históricos</h2>
         <p className="historical-subtitle">

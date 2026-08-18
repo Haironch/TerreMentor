@@ -2,6 +2,7 @@ import { useState } from "react";
 import { DEPARTMENTS } from "../lib/departments";
 import { describeWeather } from "../lib/weatherCodes";
 import { useWeather } from "../hooks/useWeather";
+import { useTrembleReveal } from "../hooks/useTrembleReveal";
 
 function dayLabel(dateStr, index) {
   if (index === 0) return "Hoy";
@@ -15,9 +16,10 @@ export function WeatherDashboard() {
   const { data, error, loading } = useWeather(departamento);
 
   const current = data ? describeWeather(data.current.weatherCode) : null;
+  const tremble = useTrembleReveal();
 
   return (
-    <section className="weather-section">
+    <section ref={tremble.ref} className={`weather-section ${tremble.className}`}>
       <div className="weather-header">
         <h2>Clima por departamento</h2>
         <select value={departamento} onChange={(e) => setDepartamento(e.target.value)}>
