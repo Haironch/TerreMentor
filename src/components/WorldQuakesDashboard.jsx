@@ -99,45 +99,51 @@ function QuakeTrendChart() {
     <div className="world-quakes-chart">
       <h3>Tendencia reciente</h3>
       <p className="world-quakes-subtitle">
-        Últimos {data.windowDays} días comparados contra el mismo período calendario en años
-        anteriores.
+        Últimos {data.windowDays} días comparados contra años anteriores, y el desglose mensual de{" "}
+        {currentYear}.
       </p>
-      <ResponsiveContainer width="100%" height={160}>
-        <BarChart data={data.recentWindow.years} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-          <CartesianGrid vertical={false} stroke={gridColor} />
-          <XAxis dataKey="year" tick={{ fill: inkColor, fontSize: 11 }} axisLine={{ stroke: gridColor }} tickLine={false} />
-          <YAxis tick={{ fill: inkColor, fontSize: 11 }} axisLine={false} tickLine={false} width={28} allowDecimals={false} />
-          <Tooltip content={<WindowTooltip />} cursor={{ fill: gridColor }} />
-          <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={40}>
-            {data.recentWindow.years.map((y) => (
-              <Cell key={y.year} fill={y.year === currentYear ? YEAR_BAR_COLOR : "rgba(255,255,255,0.18)"} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
 
-      <p className="world-quakes-subtitle" style={{ marginTop: 18 }}>
-        Sismos por mes este {currentYear}.
-      </p>
-      <ResponsiveContainer width="100%" height={140}>
-        <BarChart data={data.monthly} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-          <CartesianGrid vertical={false} stroke={gridColor} />
-          <XAxis dataKey="label" tick={{ fill: inkColor, fontSize: 11 }} axisLine={{ stroke: gridColor }} tickLine={false} />
-          <YAxis tick={{ fill: inkColor, fontSize: 11 }} axisLine={false} tickLine={false} width={28} allowDecimals={false} />
-          <Tooltip content={<MonthTooltip />} cursor={{ fill: gridColor }} />
-          <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={30}>
-            {data.monthly.map((m) => (
-              <Cell
-                key={m.month}
-                fill={m.partial ? YEAR_BAR_COLOR_PARTIAL : YEAR_BAR_COLOR}
-                stroke={m.partial ? YEAR_BAR_COLOR : "none"}
-                strokeDasharray={m.partial ? "4 3" : "0"}
-                strokeWidth={m.partial ? 1.5 : 0}
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="trend-grid">
+        <div className="trend-card">
+          <p className="trend-card-label">Últimos {data.windowDays} días vs. años anteriores</p>
+          <ResponsiveContainer width="100%" height={150}>
+            <BarChart data={data.recentWindow.years} margin={{ top: 8, right: 4, left: 0, bottom: 0 }}>
+              <CartesianGrid vertical={false} stroke={gridColor} />
+              <XAxis dataKey="year" tick={{ fill: inkColor, fontSize: 10 }} axisLine={{ stroke: gridColor }} tickLine={false} />
+              <YAxis tick={{ fill: inkColor, fontSize: 11 }} axisLine={false} tickLine={false} width={22} allowDecimals={false} />
+              <Tooltip content={<WindowTooltip />} cursor={{ fill: gridColor }} />
+              <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={26}>
+                {data.recentWindow.years.map((y) => (
+                  <Cell key={y.year} fill={y.year === currentYear ? YEAR_BAR_COLOR : "rgba(255,255,255,0.18)"} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="trend-card">
+          <p className="trend-card-label">Por mes este {currentYear}</p>
+          <ResponsiveContainer width="100%" height={150}>
+            <BarChart data={data.monthly} margin={{ top: 8, right: 4, left: 0, bottom: 0 }}>
+              <CartesianGrid vertical={false} stroke={gridColor} />
+              <XAxis dataKey="label" tick={{ fill: inkColor, fontSize: 10 }} axisLine={{ stroke: gridColor }} tickLine={false} />
+              <YAxis tick={{ fill: inkColor, fontSize: 11 }} axisLine={false} tickLine={false} width={22} allowDecimals={false} />
+              <Tooltip content={<MonthTooltip />} cursor={{ fill: gridColor }} />
+              <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={20}>
+                {data.monthly.map((m) => (
+                  <Cell
+                    key={m.month}
+                    fill={m.partial ? YEAR_BAR_COLOR_PARTIAL : YEAR_BAR_COLOR}
+                    stroke={m.partial ? YEAR_BAR_COLOR : "none"}
+                    strokeDasharray={m.partial ? "4 3" : "0"}
+                    strokeWidth={m.partial ? 1.5 : 0}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
 
       <p className="world-quakes-note">
         Son conteos chicos (unos pocos sismos M6.5+ por mes) — subidas y bajadas de este tamaño son

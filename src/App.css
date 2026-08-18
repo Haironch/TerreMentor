@@ -1678,11 +1678,46 @@ body {
   margin-top: 18px;
 }
 
+.world-quakes-chart + .world-quakes-chart {
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
 .world-quakes-chart h3 {
   margin: 0 0 6px;
   font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
+}
+
+.trend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 640px) {
+  .trend-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.trend-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 10px 2px;
+  min-width: 0;
+}
+
+.trend-card-label {
+  margin: 0 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
 }
 
 .world-quakes-map {
