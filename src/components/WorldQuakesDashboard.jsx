@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useWorldQuakes } from "../hooks/useWorldQuakes";
 import { useQuakeYears } from "../hooks/useQuakeYears";
+import { useQuakeTrend } from "../hooks/useQuakeTrend";
 import { useTrembleReveal } from "../hooks/useTrembleReveal";
 import { WorldQuakesMap } from "./WorldQuakesMap";
 
@@ -57,6 +58,91 @@ function QuakeYearsChart() {
       <p className="world-quakes-note">
         El año en curso se ve más claro y punteado — todavía no termina, así que no es comparable
         directo contra los años completos.
+      </p>
+    </div>
+  );
+}
+
+function WindowTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  const y = payload[0].payload;
+  return (
+    <div className="chart-tooltip">
+      <strong>{y.year}</strong>
+      <div>{y.count} sismos</div>
+    </div>
+  );
+}
+
+function MonthTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  const m = payload[0].payload;
+  return (
+    <div className="chart-tooltip">
+      <strong>
+        {m.label}
+        {m.partial ? " (en curso)" : ""}
+      </strong>
+      <div>{m.count} sismos</div>
+    </div>
+  );
+}
+
+function QuakeTrendChart() {
+  const { data, error, loading } = useQuakeTrend();
+
+  if (loading || error || !data?.recentWindow?.years?.length) return null;
+
+  const currentYear = new Date().getUTCFullYear();
+
+  return (
+    <div className="world-quakes-chart">
+      <h3>Tendencia reciente</h3>
+      <p className="world-quakes-subtitle">
+        Últimos {data.windowDays} días comparados contra el mismo período calendario en años
+        anteriores.
+      </p>
+      <ResponsiveContainer width="100%" height={160}>
+        <BarChart data={data.recentWindow.years} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+          <CartesianGrid vertical={false} stroke={gridColor} />
+          <XAxis dataKey="year" tick={{ fill: inkColor, fontSize: 11 }} axisLine={{ stroke: gridColor }} tickLine={false} />
+          <YAxis tick={{ fill: inkColor, fontSize: 11 }} axisLine={false} tickLine={false} width={28} allowDecimals={false} />
+          <Tooltip content={<WindowTooltip />} cursor={{ fill: gridColor }} />
+          <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={40}>
+            {data.recentWindow.years.map((y) => (
+              <Cell key={y.year} fill={y.year === currentYear ? YEAR_BAR_COLOR : "rgba(255,255,255,0.18)"} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+
+      <p className="world-quakes-subtitle" style={{ marginTop: 18 }}>
+        Sismos por mes este {currentYear}.
+      </p>
+      <ResponsiveContainer width="100%" height={140}>
+        <BarChart data={data.monthly} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+          <CartesianGrid vertical={false} stroke={gridColor} />
+          <XAxis dataKey="label" tick={{ fill: inkColor, fontSize: 11 }} axisLine={{ stroke: gridColor }} tickLine={false} />
+          <YAxis tick={{ fill: inkColor, fontSize: 11 }} axisLine={false} tickLine={false} width={28} allowDecimals={false} />
+          <Tooltip content={<MonthTooltip />} cursor={{ fill: gridColor }} />
+          <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={30}>
+            {data.monthly.map((m) => (
+              <Cell
+                key={m.month}
+                fill={m.partial ? YEAR_BAR_COLOR_PARTIAL : YEAR_BAR_COLOR}
+                stroke={m.partial ? YEAR_BAR_COLOR : "none"}
+                strokeDasharray={m.partial ? "4 3" : "0"}
+                strokeWidth={m.partial ? 1.5 : 0}
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+
+      <p className="world-quakes-note">
+        Son conteos chicos (unos pocos sismos M6.5+ por mes) — subidas y bajadas de este tamaño son
+        normales por variación estadística, no necesariamente una tendencia real. Un puñado de
+        sismos grandes cayendo cerca en el tiempo pasa por azar de vez en cuando.
       </p>
     </div>
   );
@@ -155,6 +241,8 @@ export function WorldQuakesDashboard() {
       </div>
 
       <QuakeYearsChart />
+
+      <QuakeTrendChart />
 
       <p className="world-quakes-note">
         Datos en vivo del{" "}
