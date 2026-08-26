@@ -97,12 +97,32 @@ function App() {
       <WorldQuakesDashboard />
 
       <footer className="app-footer">
-        Monitoreo comunitario de sismos en Guatemala y Centroamérica, con datos públicos de{" "}
-        <a href="https://geo.insivumeh.gob.gt/sismo" target="_blank" rel="noreferrer">
-          INSIVUMEH
-        </a>{" "}
-        · Proyecto comunitario sin fines de lucro. ·{" "}
-        <a href="/privacidad.html">Política de privacidad</a>
+        <p className="app-footer-sources">
+          Datos públicos de{" "}
+          <a href="https://geo.insivumeh.gob.gt/sismo" target="_blank" rel="noreferrer">
+            INSIVUMEH
+          </a>
+          ,{" "}
+          <a href="https://www.usgs.gov/programs/earthquake-hazards" target="_blank" rel="noreferrer">
+            USGS
+          </a>
+          ,{" "}
+          <a href="https://conred.gob.gt" target="_blank" rel="noreferrer">
+            CONRED
+          </a>{" "}
+          y{" "}
+          <a href="https://open-meteo.com" target="_blank" rel="noreferrer">
+            Open-Meteo
+          </a>
+          .
+        </p>
+        <p className="app-footer-disclaimer">
+          TerreMentor no es una aplicación oficial de ningún gobierno ni institución — es un
+          proyecto comunitario, independiente y sin fines de lucro.
+        </p>
+        <p>
+          <a href="/privacidad.html">Política de privacidad</a>
+        </p>
       </footer>
     </div>
   );

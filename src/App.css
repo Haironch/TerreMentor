@@ -1911,6 +1911,14 @@ body {
   text-align: center;
 }
 
+.app-footer p {
+  margin: 0 0 8px;
+}
+
+.app-footer p:last-child {
+  margin-bottom: 0;
+}
+
 .app-footer a {
   color: var(--text-secondary);
 }

@@ -252,7 +252,7 @@ export function WorldQuakesDashboard() {
 
       <p className="world-quakes-note">
         Datos en vivo del{" "}
-        <a href="https://earthquake.usgs.gov" target="_blank" rel="noreferrer">
+        <a href="https://www.usgs.gov/programs/earthquake-hazards" target="_blank" rel="noreferrer">
           USGS
         </a>{" "}
         (Servicio Geológico de EE. UU.), catálogo sísmico global de referencia — no sustituye fuentes
