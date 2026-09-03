@@ -29,5 +29,38 @@ export function detectAftershockSequence(quakes) {
   const lastTime = parseGtDatetime(aftershocks[aftershocks.length - 1].datetime);
   const hoursSinceLast = (Date.now() - lastTime) / (1000 * 60 * 60);
 
-  return { mainshock, aftershocks, radiusKm: RADIUS_KM, hoursSinceLast };
+  const largestAftershock = aftershocks.reduce((max, q) => (q.magnitude > max.magnitude ? q : max));
+  // Ley de Bath (empírica, observada en miles de secuencias reales): la
+  // réplica más grande suele ser ~1.2 magnitudes menor que el sismo
+  // principal, en promedio. No es una predicción para este caso puntual.
+  const bathsLawEstimate = Math.round((mainshock.magnitude - 1.2) * 10) / 10;
+
+  const dailyCounts = buildDailyCounts(aftershocks, mainshockTime);
+
+  return {
+    mainshock,
+    aftershocks,
+    radiusKm: RADIUS_KM,
+    hoursSinceLast,
+    largestAftershock,
+    bathsLawEstimate,
+    dailyCounts,
+  };
+}
+
+function buildDailyCounts(aftershocks, mainshockTime) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const buckets = new Map();
+
+  for (const q of aftershocks) {
+    const day = Math.floor((parseGtDatetime(q.datetime) - mainshockTime) / dayMs);
+    buckets.set(day, (buckets.get(day) || 0) + 1);
+  }
+
+  const maxDay = Math.max(...buckets.keys());
+  const counts = [];
+  for (let d = 0; d <= maxDay; d++) {
+    counts.push({ day: d, label: `Día ${d}`, count: buckets.get(d) || 0 });
+  }
+  return counts;
 }

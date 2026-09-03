@@ -21,6 +21,7 @@ import { LiveSeismograph } from "./components/LiveSeismograph";
 import { IntensityDashboard } from "./components/IntensityDashboard";
 import { HistoricalComparison } from "./components/HistoricalComparison";
 import { AftershockSequence } from "./components/AftershockSequence";
+import { FaultActivityGauges } from "./components/FaultActivityGauges";
 import { AppSkeleton } from "./components/Skeleton";
 import { SplashScreen } from "./components/SplashScreen";
 import "./App.css";
@@ -94,6 +95,7 @@ function App() {
       )}
 
       <AftershockSequence quakes={data?.groups?.["SISMOS 1 mes"]?.quakes} />
+      <FaultActivityGauges quakes={data?.groups?.["SISMOS 1 semana"]?.quakes} geologia={geologia} />
 
       <VolcanoDashboard />
       <WeatherDashboard />

@@ -1771,6 +1771,41 @@ body {
   color: var(--text-secondary);
 }
 
+.aftershock-bath {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.aftershock-bath-label {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.aftershock-bath-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.aftershock-chart {
+  margin-top: 18px;
+}
+
+.aftershock-chart h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
 .aftershock-list {
   display: flex;
   flex-direction: column;
@@ -1848,6 +1883,137 @@ body {
 }
 
 .aftershock-note {
+  margin: 14px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ---------- Fault activity gauges ---------- */
+
+.fault-activity-section {
+  margin-top: 18px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.fault-activity-header {
+  margin-bottom: 14px;
+}
+
+.fault-activity-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.fault-activity-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.fault-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fault-gauge {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--peak-color, var(--accent));
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.fault-gauge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.fault-gauge-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.fault-gauge-total {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.fault-gauge-strip {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 64px;
+}
+
+.fault-gauge-day {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  height: 100%;
+}
+
+.fault-gauge-bar {
+  width: 100%;
+  max-width: 22px;
+  background: var(--bar-color);
+  border-radius: 4px 4px 2px 2px;
+  box-shadow: 0 0 8px var(--bar-color);
+  transition: height 0.3s ease;
+}
+
+.fault-gauge-day-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.fault-activity-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.fault-activity-toggle:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.fault-activity-toggle-chevron {
+  display: inline-block;
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.fault-activity-toggle-chevron-up {
+  transform: rotate(180deg);
+}
+
+.fault-activity-note {
   margin: 14px 0 0;
   font-size: 11px;
   color: var(--text-muted);
