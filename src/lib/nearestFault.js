@@ -34,24 +34,42 @@ function minDistanceToLineKm(lat, lon, coordinates, originLat) {
   return best;
 }
 
-export function nearestFault(lat, lon, geologia) {
+// La falla terrestre (de las 8 mapeadas) más cercana, sin contar la fosa.
+export function nearestMappedFault(lat, lon, geologia) {
   if (!geologia) return null;
 
   let best = null;
-
   geologia.fallas.features.forEach((feature, i) => {
     const distanceKm = minDistanceToLineKm(lat, lon, feature.geometry.coordinates, lat);
     if (!best || distanceKm < best.distanceKm) {
       best = { name: FAULT_LABELS[i], distanceKm };
     }
   });
+  return best;
+}
 
+// Distancia a la línea de la Fosa Mesoamericana.
+export function nearestTrench(lat, lon, geologia) {
+  if (!geologia) return null;
+
+  let best = null;
   geologia.fosaMesoamericana.features.forEach((feature) => {
     const distanceKm = minDistanceToLineKm(lat, lon, feature.geometry.coordinates, lat);
     if (!best || distanceKm < best.distanceKm) {
       best = { name: TRENCH_LABEL, distanceKm };
     }
   });
-
   return best;
+}
+
+// Lo más cercano entre las fallas y la fosa, sin límite de distancia (quien
+// lo usa muestra también la distancia, p. ej. "Falla de Jalpatagua (~19 km)").
+export function nearestFault(lat, lon, geologia) {
+  if (!geologia) return null;
+
+  const fault = nearestMappedFault(lat, lon, geologia);
+  const trench = nearestTrench(lat, lon, geologia);
+  if (!fault) return trench;
+  if (!trench) return fault;
+  return trench.distanceKm < fault.distanceKm ? trench : fault;
 }

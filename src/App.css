@@ -2011,12 +2011,13 @@ body {
   display: flex;
   align-items: flex-end;
   gap: 6px;
-  height: 64px;
+  height: 116px;
 }
 
 .fault-gauge-day {
   display: flex;
   flex: 1;
+  min-width: 0;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
@@ -2024,19 +2025,63 @@ body {
   height: 100%;
 }
 
+/* Zona de la barra: el número va arriba y la barra ocupa el resto */
+.fault-gauge-track {
+  --count-space: 15px;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.fault-gauge-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 13px;
+  color: var(--text-secondary);
+}
+
+.fault-gauge-count-zero {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
 .fault-gauge-bar {
   width: 100%;
   max-width: 22px;
+  height: calc((100% - var(--count-space)) * var(--h, 0));
   background: var(--bar-color);
   border-radius: 4px 4px 2px 2px;
   box-shadow: 0 0 8px var(--bar-color);
   transition: height 0.3s ease;
 }
 
+.fault-gauge-bar-empty {
+  width: 100%;
+  max-width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border-strong);
+}
+
 .fault-gauge-day-label {
   font-size: 9px;
   color: var(--text-muted);
   text-transform: uppercase;
+}
+
+.fault-gauge-day-today {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.fault-gauge-unassigned {
+  border-left-style: dashed;
+  opacity: 0.75;
 }
 
 .fault-activity-toggle {
