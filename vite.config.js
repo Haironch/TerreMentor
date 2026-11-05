@@ -110,7 +110,7 @@ const pwaPlugin = VitePWA({
         },
       },
       {
-        urlPattern: /^https:\/\/[a-z]\.basemaps\.cartocdn\.com\/.*/,
+        urlPattern: /^https:\/\/server\.arcgisonline\.com\/ArcGIS\/rest\/services\/Canvas\/.*/,
         handler: 'CacheFirst',
         options: {
           cacheName: 'map-tiles',

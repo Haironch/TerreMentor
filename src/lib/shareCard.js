@@ -3,6 +3,7 @@ import { nearestZone } from "./zones";
 import { nearestFault } from "./nearestFault";
 import { HISTORICAL_QUAKES } from "./historicalQuakes";
 import { describeEnergyComparison } from "./energyComparison";
+import { BASEMAP_LABELS_URL, BASEMAP_URL, basemapTileUrl } from "./basemap";
 
 const WIDTH = 1080;
 const HEIGHT = 1350;
@@ -120,7 +121,6 @@ function drawDecorWave(ctx, x, y, width, height, color, opacity) {
 // tarjeta compartida se ve como un recorte real del mapa, no un dibujo
 // aparte.
 const TILE_SIZE = 256;
-const TILE_SUBDOMAINS = ["a", "b", "c", "d"];
 
 function lonLatToGlobalPixel(lon, lat, zoom) {
   const scale = TILE_SIZE * Math.pow(2, zoom);
@@ -165,12 +165,17 @@ async function drawEpicenterMap(ctx, { quake, band, boxX, boxY, boxSize }) {
     for (let dx = -gridRadius; dx <= gridRadius; dx++) {
       const tx = centerTileX + dx;
       const ty = centerTileY + dy;
-      const s = TILE_SUBDOMAINS[Math.abs(tx + ty) % TILE_SUBDOMAINS.length];
-      const url = `https://${s}.basemaps.cartocdn.com/dark_all/${zoom}/${tx}/${ty}.png`;
+      // El fondo y las etiquetas se cargan en paralelo, pero se dibujan en orden
+      // para que el texto quede siempre encima del fondo.
+      const layers = [BASEMAP_URL, BASEMAP_LABELS_URL].map((template) =>
+        loadImage(basemapTileUrl(template, zoom, tx, ty))
+      );
       loads.push(
-        loadImage(url).then((img) => {
-          if (img) {
-            octx.drawImage(img, (dx + gridRadius) * TILE_SIZE, (dy + gridRadius) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        Promise.all(layers).then((imgs) => {
+          for (const img of imgs) {
+            if (img) {
+              octx.drawImage(img, (dx + gridRadius) * TILE_SIZE, (dy + gridRadius) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            }
           }
         })
       );

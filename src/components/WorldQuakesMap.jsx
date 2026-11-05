@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { CircleMarker, MapContainer, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
+import { CircleMarker, MapContainer, Polyline, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapAutoResize } from "./MapAutoResize";
+import { BaseMapLayers } from "./BaseMapLayers";
 
 const PATH_COLOR = "#6b7480";
 
@@ -42,10 +43,7 @@ export function WorldQuakesMap({ quakes, colorFor }) {
       <MapContainer center={[10, 30]} zoom={2} scrollWheelZoom={false} worldCopyJump className="world-quakes-map-canvas">
         <MapAutoResize />
         <FitToPositions positions={path} />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        />
+        <BaseMapLayers />
 
         <Polyline positions={path} pathOptions={{ color: PATH_COLOR, weight: 1.5, opacity: 0.6, dashArray: "1, 6" }} />
 

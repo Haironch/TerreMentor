@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
-import { MapContainer, TileLayer, CircleMarker, Marker, Popup } from "react-leaflet";
+import { MapContainer, CircleMarker, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 import "leaflet/dist/leaflet.css";
 import { severityFor, SEVERITY_BANDS } from "../lib/severity";
 import { HeatmapLayer } from "./HeatmapLayer";
 import { MapAutoResize } from "./MapAutoResize";
+import { BaseMapLayers } from "./BaseMapLayers";
 import { TimelapseControls } from "./TimelapseControls";
 import { FaultLinesLayer, FAULT_COLOR, TRENCH_COLOR } from "./FaultLinesLayer";
 import { useTimelapse } from "../hooks/useTimelapse";
@@ -156,10 +157,7 @@ export function SismoMap({ groups, selectedLayer, onSelectLayer, latest, geologi
 
       <MapContainer center={GUATEMALA_CENTER} zoom={7} scrollWheelZoom={false} className="sismo-map-canvas">
         <MapAutoResize />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        />
+        <BaseMapLayers />
 
         {showFaults && <FaultLinesLayer geologia={geologia} />}
 
