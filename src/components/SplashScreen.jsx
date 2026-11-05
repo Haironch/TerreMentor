@@ -1,22 +1,53 @@
 import { useEffect, useState } from "react";
+import { useWeather } from "../hooks/useWeather";
+import { forcedSplashWeather, pickSplashWeather, splashWeatherLabel } from "../lib/splashWeather";
+import { WeatherScene } from "./WeatherScene";
 
 const WAVE_D = "M0 60 L70 60 L88 34 L106 86 L124 12 L142 92 L160 44 L178 68 L196 50 L400 60";
 const MIN_VISIBLE_MS = 1000;
+const WEATHER_VISIBLE_MS = 2600; // más tiempo cuando hay animación de clima, para que se disfrute
+const WEATHER_WAIT_MS = 2500; // si el clima tarda más que esto, se usa la bienvenida normal
 const LEAVE_MS = 500;
+const WEATHER_PLACE = "Guatemala";
 
 const reducedMotion =
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const forcedKind = forcedSplashWeather();
 
 export function SplashScreen({ ready }) {
   const [mounted, setMounted] = useState(true);
   const [leaving, setLeaving] = useState(false);
+  const { data: clima, error: climaError } = useWeather(WEATHER_PLACE);
+  const [weatherTimedOut, setWeatherTimedOut] = useState(false);
+  // undefined = todavía no se decide; null = sin escena de clima
+  const [scene, setScene] = useState(undefined);
+  const decided = scene !== undefined;
 
   useEffect(() => {
-    if (!ready) return undefined;
+    const timer = setTimeout(() => setWeatherTimedOut(true), WEATHER_WAIT_MS);
+    return () => clearTimeout(timer);
+  }, []);
 
-    const holdTimer = setTimeout(() => setLeaving(true), MIN_VISIBLE_MS);
+  // La escena se decide una sola vez, para que no cambie a medio camino.
+  useEffect(() => {
+    if (decided) return;
+    if (forcedKind) {
+      setScene({ kind: forcedKind, label: splashWeatherLabel(forcedKind, clima) });
+    } else if (clima) {
+      const kind = pickSplashWeather(clima);
+      setScene(kind ? { kind, label: splashWeatherLabel(kind, clima) } : null);
+    } else if (climaError || weatherTimedOut) {
+      setScene(null);
+    }
+  }, [decided, clima, climaError, weatherTimedOut]);
+
+  const animateWeather = Boolean(scene) && !reducedMotion;
+
+  useEffect(() => {
+    if (!ready || !decided) return undefined;
+    const holdTimer = setTimeout(() => setLeaving(true), animateWeather ? WEATHER_VISIBLE_MS : MIN_VISIBLE_MS);
     return () => clearTimeout(holdTimer);
-  }, [ready]);
+  }, [ready, decided, animateWeather]);
 
   useEffect(() => {
     if (!leaving) return undefined;
@@ -28,6 +59,7 @@ export function SplashScreen({ ready }) {
 
   return (
     <div className={`splash${leaving ? " splash-leaving" : ""}`} aria-hidden="true">
+      {animateWeather && <WeatherScene kind={scene.kind} />}
       <svg className="splash-wave" viewBox="0 0 400 120" preserveAspectRatio="xMidYMid meet">
         <path className="splash-wave-path" d={WAVE_D} fill="none" strokeLinecap="round" strokeLinejoin="round" />
         {!reducedMotion && (
@@ -37,6 +69,7 @@ export function SplashScreen({ ready }) {
         )}
       </svg>
       <p className="splash-label">Bienvenido</p>
+      {scene && <p className="splash-weather-label">{scene.label}</p>}
     </div>
   );
 }
